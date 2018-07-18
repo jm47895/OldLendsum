@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="88dp">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/verticalEndGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="8dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/verticalStartGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="8dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/horizontalTopGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="8dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/horizontalBottomGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="8dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/vertical33Guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".3" />
+
+        <TextView
+            android:id="@+id/dummyChatNameTextView"
+            style="@style/CustomDefaultSmallText"
+            android:text="Jordan Madrigal"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/dummyChatMsgTextView"
+            app:layout_constraintEnd_toStartOf="@+id/dummyChatDateText"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@+id/vertical33Guide"
+            app:layout_constraintTop_toBottomOf="@id/horizontalTopGuide" />
+
+        <TextView
+            android:id="@+id/dummyChatMsgTextView"
+            style="@style/CustomDefaultSmallText"
+            android:layout_height="20dp"
+            android:text="This is a message"
+            app:layout_constraintBottom_toTopOf="@+id/horizontalBottomGuide"
+            app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/vertical33Guide"
+            app:layout_constraintTop_toBottomOf="@+id/dummyChatNameTextView" />
+
+        <TextView
+            android:id="@+id/dummyChatDateText"
+            style="@style/CustomDefaultSmallText"
+            android:text="6/25/18"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/dummyChatNameTextView"
+            app:layout_constraintEnd_toEndOf="@id/verticalEndGuide"
+            app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dummyChatNameTextView"
+            app:layout_constraintTop_toTopOf="@+id/dummyChatNameTextView" />
+
+        <View
+            android:id="@+id/dividerView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>

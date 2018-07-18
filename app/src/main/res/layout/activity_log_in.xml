@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogInActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/verticalStartGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/verticalEndGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
+
+    <TextView
+        android:id="@+id/logInTextView"
+        style="@style/CustomDefaultHeaderText"
+        android:layout_marginBottom="8dp"
+        android:text="@string/log_in"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".05" />
+
+    <TextView
+        android:id="@+id/logInNewUserTextView"
+        style="@style/CustomDefaultSmallText"
+        android:layout_marginBottom="8dp"
+        android:text="@string/new_user"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logInTextView"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/logInCreateAccountTextView"
+        style="@style/CustomLinkText"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/create_a_new_account"
+        app:layout_constraintBottom_toBottomOf="@+id/logInNewUserTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/logInNewUserTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1" />
+
+    <EditText
+        android:id="@+id/logInEmailEditText"
+        style="@style/CustomEditText"
+        android:layout_marginTop="8dp"
+        android:hint="@string/email"
+        app:layout_constraintBottom_toTopOf="@+id/logInPasswordEditText"
+        app:layout_constraintEnd_toEndOf="@id/verticalEndGuide"
+        app:layout_constraintStart_toStartOf="@id/verticalStartGuide"
+        app:layout_constraintTop_toBottomOf="@+id/logInTextView"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <EditText
+        android:id="@+id/logInPasswordEditText"
+        style="@style/CustomEditText"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/logInForgotPasswordTextView"
+        app:layout_constraintEnd_toEndOf="@id/verticalEndGuide"
+        app:layout_constraintStart_toStartOf="@id/verticalStartGuide"
+        app:layout_constraintTop_toBottomOf="@+id/logInEmailEditText" />
+
+    <TextView
+        android:id="@+id/logInForgotPasswordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/forgot_password"
+        android:textColor="@color/linkBlue"
+        app:layout_constraintBottom_toTopOf="@+id/logInButton"
+        app:layout_constraintEnd_toEndOf="@id/verticalEndGuide"
+        app:layout_constraintStart_toStartOf="@id/verticalStartGuide"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintTop_toBottomOf="@+id/logInPasswordEditText" />
+
+    <Button
+        android:id="@+id/logInButton"
+        style="@style/CustomDefaultButton"
+        android:text="@string/log_in"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logInForgotPasswordTextView" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="16dp"
+        android:background="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logInButton" />
+
+</android.support.constraint.ConstraintLayout>

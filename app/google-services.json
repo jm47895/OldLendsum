@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "773692103001",
+    "firebase_url": "https://lendsum.firebaseio.com",
+    "project_id": "lendsum",
+    "storage_bucket": "lendsum.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773692103001:android:a2241db17cb709e0",
+        "android_client_info": {
+          "package_name": "com.jordanmadrigal.lendsum"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773692103001-5cmbs58b50blso3o9d4hbactt5ctkab7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jordanmadrigal.lendsum",
+            "certificate_hash": "2d41a351f68ef6eeed8063f2c5f71ed170dea554"
+          }
+        },
+        {
+          "client_id": "773692103001-273ob8nkojir8at7fg8qnlanbf4urenj.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "773692103001-273ob8nkojir8at7fg8qnlanbf4urenj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpVpcXYAL2wu53t2KIUpMh01Iu3tpGrJo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773692103001-273ob8nkojir8at7fg8qnlanbf4urenj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
