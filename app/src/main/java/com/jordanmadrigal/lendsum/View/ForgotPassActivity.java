@@ -1,4 +1,4 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.View;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -15,10 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
+import com.jordanmadrigal.lendsum.R;
 
 public class ForgotPassActivity extends AppCompatActivity {
 

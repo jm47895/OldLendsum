@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addPackageContainer"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.AddPackageFragment">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/verticalStartGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/verticalEndGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/horizontalStartGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/horizontalEndGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="16dp" />
+
+        <ImageButton
+            android:id="@+id/createPackCloseBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorSecondaryLight"
+            android:src="@drawable/ic_close_black_24dp"
+            app:layout_constraintBottom_toTopOf="@+id/createPackName"
+            app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="@+id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@id/horizontalStartGuide"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
+
+        <EditText
+            android:id="@+id/createPackName"
+            style="@style/CustomEditText"
+            android:hint="@string/package_name"
+            app:layout_constraintBottom_toTopOf="@+id/createPackItemList"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackCloseBtn" />
+
+        <EditText
+            android:id="@+id/createPackItemList"
+            style="@style/CustomEditText"
+            android:hint="@string/item_list"
+            app:layout_constraintBottom_toTopOf="@+id/createPackIndefTextview"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackName" />
+
+        <TextView
+            android:id="@+id/createPackIndefTextview"
+            style="@style/CustomDefaultMediumText"
+            android:text="@string/lend_indefinitely"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@+id/createPackReturnDateTextView"
+            app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
+            app:layout_constraintStart_toStartOf="@+id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackItemList" />
+
+        <Switch
+            android:id="@+id/createPackIndefSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/createPackIndefTextview"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toTopOf="@+id/createPackIndefTextview" />
+
+        <TextView
+            android:id="@+id/createPackReturnDateTextView"
+            style="@style/CustomDefaultMediumText"
+            android:text="@string/return_date"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@+id/createPackBtn"
+            app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
+            app:layout_constraintStart_toStartOf="@+id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackIndefTextview" />
+
+        <ImageButton
+            android:id="@+id/datePickerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorSecondaryLight"
+            android:src="@drawable/ic_date_range_primary_color_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/createPackReturnDateTextView"
+            app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="@+id/verticalStartGuide"
+            app:layout_constraintTop_toTopOf="@+id/createPackReturnDateTextView" />
+
+        <Button
+            android:id="@+id/createPackBtn"
+            style="@style/CustomDefaultButton"
+            android:text="@string/create_package"
+            app:layout_constraintBottom_toTopOf="@+id/horizontalEndGuide"
+            app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
+            app:layout_constraintStart_toEndOf="@+id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackReturnDateTextView" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>

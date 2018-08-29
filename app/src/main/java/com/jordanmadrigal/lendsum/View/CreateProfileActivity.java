@@ -1,4 +1,4 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.View;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -13,26 +13,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.jordanmadrigal.lendsum.Model.User;
+import com.jordanmadrigal.lendsum.R;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CreateProfileActivity extends AppCompatActivity {
 
     private static final String TAG = CreateProfileActivity.class.getName();
-    public static final String USER_COLLECTION = "users";
+    private static final String USER_COLLECTION = "users";
 
 
     private FirebaseAuth mAuth;
@@ -85,7 +79,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     }
 
-    //Authenticate user
+    //Authenticate user and add them to firestore
     public void signUpUser(final String firstName, final String lastName, final String email, String password){
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -95,10 +89,11 @@ public class CreateProfileActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
 
                     String uID = mAuth.getUid();
-                    User newUser = new User();
+                    User newUser = new User(uID, firstName, lastName, email);
 
-                    insertUserIntoFirestore(firstName, lastName, email, newUser, uID);
+                    mDatabase.collection(USER_COLLECTION).document(uID).set(newUser);
 
+                    Toast.makeText(CreateProfileActivity.this, "User Added", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "User Created: Success");
                     Intent intent = new Intent(CreateProfileActivity.this, HomeActivity.class);
                     startActivity(intent);
@@ -112,47 +107,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         });
     }
 
-    //Add new user info to firestore database
-    public void insertUserIntoFirestore(String firstName, String lastName, String email, User user, String uID){
 
-        String initials = getUserInitials(firstName, lastName);
-
-        DocumentReference newUserRef = mDatabase.collection(USER_COLLECTION).document(initials + uID);
-
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setUserId(uID);
-
-        newUserRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(CreateProfileActivity.this, "User added", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CreateProfileActivity.this, "User not added", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, e.getMessage());
-            }
-        });
-
-        //Test Database addition is correct
-        mDatabase.collection(USER_COLLECTION)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
 
     //User form validation check (unitTested)
     public boolean isValidUserForm(String firstName, String lastName, String email, String password){
@@ -200,14 +155,14 @@ public class CreateProfileActivity extends AppCompatActivity {
     }
 
     //Get the initials of of username for uID (unitTested)
-    public String getUserInitials(String fName, String lName){
+    /*public String getUserInitials(String fName, String lName){
 
         String  fInitial = fName.substring(0, 1).toUpperCase();
         String lInitial = lName.substring(0,1).toUpperCase();
 
 
         return fInitial+lInitial;
-    }
+    }*/
 
 
 }

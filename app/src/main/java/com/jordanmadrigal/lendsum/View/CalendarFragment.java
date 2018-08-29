@@ -1,0 +1,100 @@
+package com.jordanmadrigal.lendsum.View;
+
+
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
+
+import com.jordanmadrigal.lendsum.R;
+import com.jordanmadrigal.lendsum.ViewModel.DateViewModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class CalendarFragment extends Fragment {
+
+    private static final String LOG_TAG = CalendarFragment.class.getSimpleName();
+    private DateViewModel model;
+    private ImageButton mCancelBtn;
+    private Button mAddDateBtn;
+    private DatePicker mDatePicker;
+    private String date;
+
+
+
+    public CalendarFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_calendar, container, false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
+        mCancelBtn = view.findViewById(R.id.addDateCancelBtn);
+        mAddDateBtn = view.findViewById(R.id.addDateBtn);
+        mDatePicker = view.findViewById(R.id.calendar);
+        model = ViewModelProviders.of(getActivity()).get(DateViewModel.class);
+
+        mCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                date = null;
+                getParentFragment().getChildFragmentManager().popBackStack();
+            }
+        });
+
+
+        mDatePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int month, int day) {
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day);
+
+                SimpleDateFormat format = new SimpleDateFormat("MMM-dd", Locale.getDefault());
+                date = format.format(calendar.getTime());
+
+
+            }
+        });
+
+        mAddDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                model.setSelected(date);
+
+                getParentFragment().getChildFragmentManager().popBackStackImmediate();
+
+            }
+        });
+    }
+
+}

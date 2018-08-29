@@ -1,13 +1,15 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.View;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class InviteFriends extends AppCompatActivity {
+import com.jordanmadrigal.lendsum.R;
+
+public class ManagePaymentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_invite_friends);
+        setContentView(R.layout.activity_manage_payment);
     }
 }

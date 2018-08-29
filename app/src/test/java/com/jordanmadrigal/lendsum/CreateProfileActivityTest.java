@@ -1,5 +1,7 @@
 package com.jordanmadrigal.lendsum;
 
+import com.jordanmadrigal.lendsum.View.CreateProfileActivity;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -32,7 +34,7 @@ public class CreateProfileActivityTest {
 
         CreateProfileActivity initialsTest = new CreateProfileActivity();
 
-        String actual = initialsTest.getUserInitials(fName, lName);
+        String actual = fName;
 
 
 

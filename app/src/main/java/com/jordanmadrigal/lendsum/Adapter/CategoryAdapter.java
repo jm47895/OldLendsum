@@ -1,8 +1,12 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.Adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.jordanmadrigal.lendsum.View.BorrowFragment;
+import com.jordanmadrigal.lendsum.View.ChatFragment;
+import com.jordanmadrigal.lendsum.View.LendFragment;
 
 public class CategoryAdapter extends FragmentPagerAdapter {
 

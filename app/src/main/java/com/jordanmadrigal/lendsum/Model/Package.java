@@ -1,12 +1,12 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.Model;
 
 public class Package {
 
     private String packageName;
-    private String itemName;
+    private String itemList;
     private float itemPrice;
     private String itemDescription;
-    private boolean freeBundle;
+    private boolean indefinite;
     private boolean lendToOwn;
     private String packageRate;
     private int lendTimePeriod;
@@ -14,12 +14,23 @@ public class Package {
     private String returnDate;
     private String userName;
 
-    public Package(String packageName, String itemDescription, String packageRate, String returnDate, String userName) {
+    public Package() {
+    }
+
+    public Package(String packageName, String itemList, boolean indefinite, String returnDate) {
+        this.packageName = packageName;
+        this.itemList = itemList;
+        this.indefinite = indefinite;
+        this.returnDate = returnDate;
+    }
+
+
+
+    public Package(String packageName, String itemDescription, String packageRate, String returnDate) {
         this.packageName = packageName;
         this.itemDescription = itemDescription;
         this.packageRate = packageRate;
         this.returnDate = returnDate;
-        this.userName = userName;
     }
 
     public String getPackageName() {
@@ -34,9 +45,7 @@ public class Package {
         return itemDescription;
     }
 
-    public void setItemDescription(String itemDescription) {
-        this.itemDescription = itemDescription;
-    }
+    public void setItemDescription(String itemDescription) { this.itemDescription = itemDescription; }
 
     public String getPackageRate() {
         return packageRate;
@@ -60,5 +69,21 @@ public class Package {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getItemList() {
+        return itemList;
+    }
+
+    public void setItemList(String itemList) {
+        this.itemList = itemList;
+    }
+
+    public boolean isIndefinite() {
+        return indefinite;
+    }
+
+    public void setIndefinite(boolean indefinite) {
+        this.indefinite = indefinite;
     }
 }

@@ -1,4 +1,4 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.View;
 
 
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.jordanmadrigal.lendsum.Adapter.ChatMessagesAdapter;
+import com.jordanmadrigal.lendsum.Model.Message;
+import com.jordanmadrigal.lendsum.R;
 
 import java.util.ArrayList;
 import java.util.List;

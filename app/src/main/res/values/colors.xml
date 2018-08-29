@@ -7,7 +7,8 @@
     <color name="colorAccentSkyBlue">#3889C2</color>
     <color name="linkBlue">#0000EE</color>
     <color name="headerBlack">#000000</color>
-    <color name="colorSecondary">#FFFFFF</color>
+    <color name="colorSecondaryLight">#FFFFFF</color>
     <color name="colorSecondaryDark">#A8A19E</color>
     <color name="darkBrown">#654321</color>
+    <color name="opacity80Black">#CC000000</color>
 </resources>

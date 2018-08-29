@@ -1,21 +1,18 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.Adapter;
 
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.jordanmadrigal.lendsum.Model.Package;
+import com.jordanmadrigal.lendsum.R;
 
 import java.util.List;
 
@@ -27,13 +24,14 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
         mPackageDataSet = packageList;
     }
 
+
     public class PackageViewHolder extends RecyclerView.ViewHolder{
 
         private int rotationAngle = 0;
         private int minHeight;
         private CardView cardView;
-        private TextView packageHeaderText, itemsParaText, rateParaText, returnDateParaText, itemsSubtext, rateSubtext, returnDateSubtext, userNameText;
-        private ImageButton expandBtn, msgBtn, editBtn;
+        private TextView packageHeaderText, itemListText, rateParaText, returnDateParaText, itemsSubtext, rateSubtext, returnDateSubtext, userNameText;
+        private ImageButton expandBtn, msgBtn, editBtn, deleteBtn;
 
         public PackageViewHolder(View itemView) {
             super(itemView);
@@ -47,16 +45,18 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
             msgBtn = itemView.findViewById(R.id.packageMsgBtn);
             editBtn = itemView.findViewById(R.id.editBtn);
             packageHeaderText = itemView.findViewById(R.id.dummyBundleTitleTextView);
-            itemsParaText = itemView.findViewById(R.id.dummyItemsParagraphTextView);
+            itemListText = itemView.findViewById(R.id.dummyItemListTextView);
             rateParaText = itemView.findViewById(R.id.dummyRateParagraphTextView);
             returnDateParaText = itemView.findViewById(R.id.dummyReturnDateParagraphTextView);
+            deleteBtn = itemView.findViewById(R.id.packageDeleteBtn);
 
             hideViews();
 
             //collapse and expand functionality and animation
-            final int height = 600;
 
             //Assign min height to cardvView
+            final int height = 600;
+
             cardView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -134,22 +134,25 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
             itemsSubtext.setVisibility(View.VISIBLE);
             rateSubtext.setVisibility(View.VISIBLE);
             returnDateSubtext.setVisibility(View.VISIBLE);
-            itemsParaText.setVisibility(View.VISIBLE);
+            itemListText.setVisibility(View.VISIBLE);
             rateParaText.setVisibility(View.VISIBLE);
             returnDateParaText.setVisibility(View.VISIBLE);
             msgBtn.setVisibility(View.VISIBLE);
             editBtn.setVisibility(View.VISIBLE);
+            deleteBtn.setVisibility(View.VISIBLE);
+
         }
 
         private void hideViews(){
             itemsSubtext.setVisibility(View.INVISIBLE);
             rateSubtext.setVisibility(View.INVISIBLE);
             returnDateSubtext.setVisibility(View.INVISIBLE);
-            itemsParaText.setVisibility(View.INVISIBLE);
+            itemListText.setVisibility(View.INVISIBLE);
             rateParaText.setVisibility(View.INVISIBLE);
             returnDateParaText.setVisibility(View.INVISIBLE);
             msgBtn.setVisibility(View.INVISIBLE);
             editBtn.setVisibility(View.INVISIBLE);
+            deleteBtn.setVisibility(View.INVISIBLE);
         }
 
 
@@ -171,9 +174,14 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
 
         holder.userNameText.setText(packageData.getUserName());
         holder.packageHeaderText.setText(packageData.getPackageName());
-        holder.itemsParaText.setText(packageData.getItemDescription());
+        holder.itemListText.setText(packageData.getItemList());
         holder.rateParaText.setText(packageData.getPackageRate());
-        holder.returnDateParaText.setText(packageData.getReturnDate());
+
+        if(packageData.getReturnDate() != null){
+            holder.returnDateParaText.setText(packageData.getReturnDate());
+        }else{
+            holder.returnDateParaText.setText(R.string.indef_abbr);
+        }
     }
 
 

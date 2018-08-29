@@ -1,4 +1,4 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.Model;
 
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
@@ -20,6 +20,13 @@ public class    User {
         this.lastName = lastName;
         this.email = email;
         this.profileImageID = profileImageID;
+    }
+
+    public User(String userId, String firstName, String lastName, String email) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
     }
 
     public String getUserId() {

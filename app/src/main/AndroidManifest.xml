@@ -13,9 +13,9 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".View.SplashScreenActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".View.HomeActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,60 +25,54 @@
         </activity>
 
         <activity
-            android:name=".LogInActivity"
+            android:name=".View.LogInActivity"
             android:screenOrientation="portrait"
             android:label="@string/welcome_msg" />
 
         <activity
-            android:name=".CreateProfileActivity"
+            android:name=".View.CreateProfileActivity"
             android:screenOrientation="portrait"
             android:label="@string/create_new_profile"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName=".View.HomeActivity" />
 
         <activity
-            android:name=".ForgotPassActivity"
+            android:name=".View.ForgotPassActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName=".View.HomeActivity" />
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".View.HomeActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" />
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".View.SettingsActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".View.HomeActivity"
             android:label="Settings"/>
 
         <activity
-            android:name=".ProfileActivity"
+            android:name=".View.FriendSearchActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity"
-            android:label="Profile"/>
-
-        <activity
-            android:name=".FriendSearchActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".View.HomeActivity"
             android:label="Search Friends"/>
 
         <activity
-            android:name=".ManagePaymentActivity"
+            android:name=".View.ManagePaymentActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".View.HomeActivity"
             android:label="Manage Payments"/>
 
         <activity
-            android:name=".InviteFriends"
+            android:name=".View.InviteFriendsActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".View.HomeActivity"
             android:label="Invite Friends"/>
 
         <activity
-            android:name=".HelpActivity"
+            android:name=".View.HelpActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".View.HomeActivity"
             android:label="Help"/>
     </application>
 

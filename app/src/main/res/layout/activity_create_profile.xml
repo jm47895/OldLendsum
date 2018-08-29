@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInActivity">
+    tools:context=".View.LogInActivity">
 
     <android.support.constraint.Guideline
         android:id="@+id/verticalStartGuide"
@@ -75,7 +75,7 @@
         android:layout_marginTop="16dp"
         android:background="@color/colorPrimary"
         android:text="@string/next"
-        android:textColor="@color/colorSecondary"
+        android:textColor="@color/colorSecondaryLight"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

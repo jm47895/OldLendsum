@@ -64,7 +64,7 @@
             android:text="This is a message"
             app:layout_constraintBottom_toTopOf="@+id/horizontalBottomGuide"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/vertical33Guide"
             app:layout_constraintTop_toBottomOf="@+id/dummyChatNameTextView" />
 
@@ -74,9 +74,7 @@
             android:text="6/25/18"
             android:textColor="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="@+id/dummyChatNameTextView"
-            app:layout_constraintEnd_toEndOf="@id/verticalEndGuide"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/dummyChatNameTextView"
             app:layout_constraintTop_toTopOf="@+id/dummyChatNameTextView" />
 

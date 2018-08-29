@@ -1,16 +1,15 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.View;
 
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ProfileActivity extends AppCompatActivity {
+import com.jordanmadrigal.lendsum.R;
+
+public class InviteFriendsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-
+        setContentView(R.layout.activity_invite_friends);
     }
 }

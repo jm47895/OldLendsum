@@ -1,4 +1,4 @@
-package com.jordanmadrigal.lendsum;
+package com.jordanmadrigal.lendsum.View;
 
 
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.jordanmadrigal.lendsum.Model.Package;
+import com.jordanmadrigal.lendsum.Adapter.PackageAdapter;
+import com.jordanmadrigal.lendsum.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +42,13 @@ public class BorrowFragment extends Fragment {
 
         List<Package> packages = new ArrayList<>();
 
+        /*packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
         packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
         packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
         packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
         packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
         packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
-        packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
-        packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));
+        packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));*/
 
 
         PackageAdapter adapter = new PackageAdapter(packages);
