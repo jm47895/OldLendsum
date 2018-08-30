@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.jordanmadrigal.lendsum.Adapter.CategoryAdapter;
+import com.jordanmadrigal.lendsum.Adapter.ViewPagerAdapter;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.User;
 import com.jordanmadrigal.lendsum.R;
@@ -70,7 +70,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         mViewPager.setSwipeEnabled(true);
 
         TabLayout tabLayout = findViewById(R.id.sliding_tabs);
-        CategoryAdapter adapter = new CategoryAdapter(getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(mViewPager);
 

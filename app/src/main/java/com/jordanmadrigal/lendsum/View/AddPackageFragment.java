@@ -31,6 +31,9 @@ import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DateViewModel;
 import com.jordanmadrigal.lendsum.ViewModel.PackageViewModel;
 
+import static com.jordanmadrigal.lendsum.Utility.Constants.PACKAGE_COLLECTION;
+import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,8 +41,6 @@ import com.jordanmadrigal.lendsum.ViewModel.PackageViewModel;
 public class AddPackageFragment extends Fragment {
 
     private static final String LOG_TAG = AddPackageFragment.class.getSimpleName();
-    private static final String USER_COLLECTION = "users";
-    private static final String PACKAGE_COLLECTION = "packages";
 
     private FirebaseFirestore mDatabase;
     private FirebaseUser mUser;
@@ -151,12 +152,9 @@ public class AddPackageFragment extends Fragment {
                     String uId = mUser.getUid();
                     Package userPackage = new Package(packName, itemList, indefinite, date);
 
-                    //Add data to Firestore and populate in UI
-                    addPackageToFirestore(uId, userPackage);
+                    writePackageToFirestore(uId, userPackage);
 
-                    mPackViewModel.setSelectedPack(userPackage);
-
-                    //displayFirstorePackageUI(uId, packName);
+                    readFirestorePackage(uId, packName);
 
                     mActionBarListener.onActionBarListener(R.string.app_name);
 
@@ -186,7 +184,7 @@ public class AddPackageFragment extends Fragment {
         }
     }
 
-    public void addPackageToFirestore(String uId, Package userPackage){
+    public void writePackageToFirestore(String uId, Package userPackage){
 
         String packageName = userPackage.getPackageName();
 
@@ -196,30 +194,21 @@ public class AddPackageFragment extends Fragment {
     }
 
     //TODO Check into getting info from firestore.
-    /*public  void displayFirstorePackageUI(String uID, String packageName){
+    public  void readFirestorePackage(String uID, String packageName){
 
-        DocumentReference document = mDatabase.collection(USER_COLLECTION).document(uID).collection(PACKAGE_COLLECTION).document(packageName);
+        DocumentReference packageRef = mDatabase.collection(USER_COLLECTION).document(uID).collection(PACKAGE_COLLECTION).document(packageName);
 
-        document.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        packageRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Package userPackage = documentSnapshot.toObject(Package.class);
 
-                if(documentSnapshot.exists()) {
-
-                    Package userPackage = documentSnapshot.toObject(Package.class);
-
-                    String packNameDisplay = userPackage.getPackageName();
-                    String itemListDisplay = userPackage.getItemList();
-                    boolean indefiniteDisplay = userPackage.isIndefinite();
-                    String returnDateDisplay = userPackage.getReturnDate();
-
-                    mPackViewModel.setSelectedPack(new Package(packNameDisplay, itemListDisplay, indefiniteDisplay, returnDateDisplay));
-
-                }
-
+                mPackViewModel.setSelectedPack(userPackage);
             }
         });
-    }*/
+
+
+    }
 
 
 

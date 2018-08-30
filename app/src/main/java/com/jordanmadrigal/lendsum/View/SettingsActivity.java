@@ -18,10 +18,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jordanmadrigal.lendsum.R;
 
+import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
+
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = SettingsActivity.class.getName();
-    private static final String USER_COLLECTION = "users";
     private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;

@@ -23,11 +23,11 @@ import com.jordanmadrigal.lendsum.R;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
+
 public class CreateProfileActivity extends AppCompatActivity {
 
     private static final String TAG = CreateProfileActivity.class.getName();
-    private static final String USER_COLLECTION = "users";
-
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;

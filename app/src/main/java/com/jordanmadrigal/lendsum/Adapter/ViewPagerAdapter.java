@@ -8,11 +8,11 @@ import com.jordanmadrigal.lendsum.View.BorrowFragment;
 import com.jordanmadrigal.lendsum.View.ChatFragment;
 import com.jordanmadrigal.lendsum.View.LendFragment;
 
-public class CategoryAdapter extends FragmentPagerAdapter {
+public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private String tabTitles[] = new String[]{"Lending","Messages","Borrowing"};
 
-    public CategoryAdapter(FragmentManager fragmentManager) {
+    public ViewPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
