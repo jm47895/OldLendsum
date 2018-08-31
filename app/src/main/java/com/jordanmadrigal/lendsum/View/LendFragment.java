@@ -33,11 +33,7 @@ public class LendFragment extends Fragment{
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private FirebaseFirestore database;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
     private PackageViewModel mPackViewModel;
-    private ImageButton mDeletePackBtn;
 
     private List<Package> packages;
 
@@ -64,11 +60,11 @@ public class LendFragment extends Fragment{
 
         PackageAdapter adapter = new PackageAdapter(packages);
 
+
         mPackViewModel.getSelectedPack().observe(this, new Observer<Package>() {
             @Override
             public void onChanged(@Nullable Package aPackage) {
                 packages.add(aPackage);
-
                 mRecyclerView.setAdapter(adapter);
             }
         });
@@ -77,20 +73,4 @@ public class LendFragment extends Fragment{
         return rootView;
 
     }
-
-    /*@Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mDeletePackBtn = view.findViewById(R.id.packageDeleteBtn);
-
-        mDeletePackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                packages.get()
-            }
-        });
-
-
-    }*/
 }
