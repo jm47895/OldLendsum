@@ -51,8 +51,8 @@ public class BorrowFragment extends Fragment {
         packages.add(new Package("Gamesystem", "Xbox, Controllers, Horizon Zero Dawn", "$5 per day", "5/5/18", "borrowing from " + "username4567"));*/
 
 
-        PackageAdapter adapter = new PackageAdapter(packages);
-        mRecyclerView.setAdapter(adapter);
+        //PackageAdapter adapter = new PackageAdapter(packages);
+        //mRecyclerView.setAdapter(adapter);
 
         return rootView;
     }

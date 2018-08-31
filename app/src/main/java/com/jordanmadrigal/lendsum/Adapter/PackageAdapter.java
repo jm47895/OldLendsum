@@ -11,6 +11,8 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -23,14 +25,11 @@ import java.util.List;
 import static com.jordanmadrigal.lendsum.Utility.Constants.PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
-public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageViewHolder>{
+public class PackageAdapter extends FirestoreRecyclerAdapter<Package, PackageAdapter.PackageViewHolder> {
 
-    private List<Package> mPackageDataSet;
-
-    public PackageAdapter(List<Package> packageList) {
-        mPackageDataSet = packageList;
+    public PackageAdapter(@NonNull FirestoreRecyclerOptions<Package> options) {
+        super(options);
     }
-
 
     public class PackageViewHolder extends RecyclerView.ViewHolder{
 
@@ -174,18 +173,18 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
         return new PackageViewHolder(view);
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull final PackageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PackageViewHolder holder, int position, @NonNull Package model) {
 
-        final Package packageData = mPackageDataSet.get(position);
+        holder.mUserNameText.setText(model.getUserName());
+        holder.mPackageHeaderText.setText(model.getPackageName());
+        holder.mItemListText.setText(model.getItemList());
+        holder.mRateParaText.setText(model.getPackageRate());
 
-        holder.mUserNameText.setText(packageData.getUserName());
-        holder.mPackageHeaderText.setText(packageData.getPackageName());
-        holder.mItemListText.setText(packageData.getItemList());
-        holder.mRateParaText.setText(packageData.getPackageRate());
-
-        if(packageData.getReturnDate() != null){
-            holder.mReturnDateParaText.setText(packageData.getReturnDate());
+        if(model.getReturnDate() != null){
+            holder.mReturnDateParaText.setText(model.getReturnDate());
         }else{
             holder.mReturnDateParaText.setText(R.string.indef_abbr);
         }
@@ -194,24 +193,14 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
             @Override
             public void onClick(View view) {
                 String packHeader = holder.mPackageHeaderText.getText().toString();
-                int holderPosition = holder.getAdapterPosition();
 
                 deleteDataFromFirestore(packHeader);
 
-                mPackageDataSet.remove(holderPosition);
-                notifyItemRemoved(holderPosition);
-                notifyItemRangeChanged(holderPosition, mPackageDataSet.size());
             }
         });
 
-
     }
 
-
-    @Override
-    public int getItemCount() {
-        return mPackageDataSet.size();
-    }
 
     public void deleteDataFromFirestore(String packageHeader){
 
@@ -223,7 +212,7 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
         packRef.delete();
     }
 
-    
+
 
 
 }

@@ -19,17 +19,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DateViewModel;
-import com.jordanmadrigal.lendsum.ViewModel.PackageViewModel;
 
 import static com.jordanmadrigal.lendsum.Utility.Constants.PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
@@ -38,13 +34,12 @@ import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddPackageFragment extends Fragment {
+public class AddPackageFragment extends Fragment{
 
     private static final String LOG_TAG = AddPackageFragment.class.getSimpleName();
 
     private FirebaseFirestore mDatabase;
     private FirebaseUser mUser;
-    private PackageViewModel mPackViewModel;
     private DateViewModel mDateModel;
     private TextView mReturnDateTextView;
     private EditText mPackHeaderText, mItemList;
@@ -52,6 +47,7 @@ public class AddPackageFragment extends Fragment {
     private Switch mIndefSwitch;
     private ImageButton mDatePickerBtn, mCloseBtn;
     private boolean mIndefinite;
+    private String packageName;
     private OnActivityToFragmentListener mActionBarListener, mFragmentVisibilityListener;
 
     public AddPackageFragment() {
@@ -63,7 +59,6 @@ public class AddPackageFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mDateModel = ViewModelProviders.of(getActivity()).get(DateViewModel.class);
-        mPackViewModel = ViewModelProviders.of(getActivity()).get(PackageViewModel.class);
     }
 
     @Override
@@ -154,15 +149,11 @@ public class AddPackageFragment extends Fragment {
 
                     writePackageToFirestore(uId, userPackage);
 
-                    readFirestorePackage(uId, packName);
-
                     mActionBarListener.onActionBarListener(R.string.app_name);
 
                     if (getFragmentManager() != null) {
                         getFragmentManager().popBackStack();
                     }
-
-
 
                     Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
                 }
@@ -186,31 +177,12 @@ public class AddPackageFragment extends Fragment {
 
     public void writePackageToFirestore(String uId, Package userPackage){
 
-        String packageName = userPackage.getPackageName();
+        packageName = userPackage.getPackageName();
 
         //Add to firestore database
         mDatabase.collection(USER_COLLECTION).document(uId).collection(PACKAGE_COLLECTION).document(packageName).set(userPackage);
 
     }
-
-    //TODO Check into getting info from firestore.
-    public  void readFirestorePackage(String uID, String packageName){
-
-        DocumentReference packageRef = mDatabase.collection(USER_COLLECTION).document(uID).collection(PACKAGE_COLLECTION).document(packageName);
-
-        packageRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Package userPackage = documentSnapshot.toObject(Package.class);
-
-                mPackViewModel.setSelectedPack(userPackage);
-            }
-        });
-
-
-    }
-
-
 
     @Override
     public void onDetach() {
@@ -218,5 +190,6 @@ public class AddPackageFragment extends Fragment {
         mActionBarListener = null;
         mFragmentVisibilityListener = null;
     }
+
 
 }

@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     private FloatingActionButton mFAB;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-    private View mHeaderView;
+    private View mNavHeaderView;
     private FirebaseFirestore database;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -61,9 +61,10 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
 
         mDrawerLayout = findViewById(R.id.drawerLayout);
 
+        //set the name of the user in the head of menu
         mNavigationView = findViewById(R.id.nav_view);
-        mHeaderView = mNavigationView.getHeaderView(0);
-        mNavProfText = mHeaderView.findViewById(R.id.navUserName);
+        mNavHeaderView = mNavigationView.getHeaderView(0);
+        mNavProfText = mNavHeaderView.findViewById(R.id.navUserName);
 
         //Sliding fragments with tabs
         mViewPager = findViewById(R.id.viewPager);
