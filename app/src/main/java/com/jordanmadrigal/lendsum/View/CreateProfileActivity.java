@@ -101,7 +101,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
                 }else{
                     Log.d(TAG, task.getException().getMessage());
-                    Toast.makeText(CreateProfileActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    mEmail.setError("Email already exists");
                 }
             }
         });

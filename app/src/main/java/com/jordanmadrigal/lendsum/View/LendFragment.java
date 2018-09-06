@@ -18,7 +18,7 @@ import com.jordanmadrigal.lendsum.Adapter.PackageAdapter;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 
-import static com.jordanmadrigal.lendsum.Utility.Constants.PACKAGE_COLLECTION;
+import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
 /**
@@ -45,7 +45,7 @@ public class LendFragment extends Fragment{
 
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         Query query = FirebaseFirestore.getInstance().collection(USER_COLLECTION)
-                .document(mUser.getUid()).collection(PACKAGE_COLLECTION);
+                .document(mUser.getUid()).collection(LEND_PACKAGE_COLLECTION);
         FirestoreRecyclerOptions<Package> options = new FirestoreRecyclerOptions.Builder<Package>()
                 .setQuery(query, Package.class).build();
 

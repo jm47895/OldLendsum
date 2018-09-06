@@ -12,13 +12,15 @@ public class Package {
     private int lendTimePeriod;
     private int maturityDate;
     private String returnDate;
-    private String userName;
+    private String borrowerName;
+    private String borrowerEmail;
 
     public Package() {
     }
 
-    public Package(String packageName, String itemList, boolean indefinite, String returnDate) {
+    public Package(String packageName, String borrowerEmail, String itemList, boolean indefinite, String returnDate) {
         this.packageName = packageName;
+        this.borrowerEmail = borrowerEmail;
         this.itemList = itemList;
         this.indefinite = indefinite;
         this.returnDate = returnDate;
@@ -63,12 +65,20 @@ public class Package {
         this.returnDate = returnDate;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getBorrowerName() {
+        return borrowerName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setBorrowerName(String borrowerName) {
+        this.borrowerName = borrowerName;
+    }
+
+    public String getBorrowerEmail() {
+        return borrowerEmail;
+    }
+
+    public void setBorrowerEmail(String borrowerEmail) {
+        this.borrowerEmail = borrowerEmail;
     }
 
     public String getItemList() {

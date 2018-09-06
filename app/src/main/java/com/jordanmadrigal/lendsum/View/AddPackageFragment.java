@@ -19,15 +19,20 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DateViewModel;
-
-import static com.jordanmadrigal.lendsum.Utility.Constants.PACKAGE_COLLECTION;
+import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
+import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
 
@@ -42,7 +47,7 @@ public class AddPackageFragment extends Fragment{
     private FirebaseUser mUser;
     private DateViewModel mDateModel;
     private TextView mReturnDateTextView;
-    private EditText mPackHeaderText, mItemList;
+    private EditText mPackHeaderText, mItemList, mBorrowerEmail;
     private Button mAddPackBtn;
     private Switch mIndefSwitch;
     private ImageButton mDatePickerBtn, mCloseBtn;
@@ -74,14 +79,12 @@ public class AddPackageFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final String packHeadTextErr = "Package name cannot be left blank";
-        final String packItemListErr = "Item List cannot be left blank";
-
         mIndefinite = false;
         mDatabase = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mCloseBtn = view.findViewById(R.id.createPackCloseBtn);
         mPackHeaderText = view.findViewById(R.id.createPackName);
+        mBorrowerEmail = view.findViewById(R.id.createPackBorrowerEmail);
         mItemList = view.findViewById(R.id.createPackItemList);
         mAddPackBtn = view.findViewById(R.id.createPackBtn);
         mReturnDateTextView = view.findViewById(R.id.createPackReturnDateTextView);
@@ -128,8 +131,13 @@ public class AddPackageFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
+                String packHeadTextErr = "Package name cannot be left blank";
+                String packItemListErr = "Item List cannot be left blank";
+                String packBorrowerNameErr = "Borrower name cannot be left blank";
+
                 mFragmentVisibilityListener.onFragmentVisible(false);
                 String packName = mPackHeaderText.getText().toString().trim();
+                String borrowerEmail = mBorrowerEmail.getText().toString().trim();
                 String itemList = mItemList.getText().toString().trim();
                 String date = mDateModel.getSelected().getValue();
                 boolean indefinite = mIndefinite;
@@ -142,20 +150,22 @@ public class AddPackageFragment extends Fragment{
                     mPackHeaderText.setError(packHeadTextErr);
                 }else if(TextUtils.isEmpty(itemList)){
                     mItemList.setError(packItemListErr);
+                }else if(TextUtils.isEmpty(borrowerEmail)){
+                    mBorrowerEmail.setError(packBorrowerNameErr);
                 }else{
 
                     String uId = mUser.getUid();
-                    Package userPackage = new Package(packName, itemList, indefinite, date);
+                    Package userPackage = new Package(packName, borrowerEmail, itemList, indefinite, date);
 
-                    writePackageToFirestore(uId, userPackage);
+                    writePackageToLenderFirestore(uId, userPackage);
+
+                    writePackageToBorrowerFirestore(userPackage);
 
                     mActionBarListener.onActionBarListener(R.string.app_name);
 
-                    if (getFragmentManager() != null) {
-                        getFragmentManager().popBackStack();
-                    }
-
                     Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
+
+                    getFragmentManager().popBackStack();
                 }
             }
         });
@@ -175,12 +185,42 @@ public class AddPackageFragment extends Fragment{
         }
     }
 
-    public void writePackageToFirestore(String uId, Package userPackage){
+    public void writePackageToLenderFirestore(String uId, Package userPackage){
 
         packageName = userPackage.getPackageName();
 
         //Add to firestore database
-        mDatabase.collection(USER_COLLECTION).document(uId).collection(PACKAGE_COLLECTION).document(packageName).set(userPackage);
+        mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION).document(packageName).set(userPackage);
+
+    }
+
+    public void writePackageToBorrowerFirestore(Package userPackage){
+        CollectionReference borrowerRef = mDatabase.collection(USER_COLLECTION);
+        borrowerRef.whereEqualTo("email", userPackage.getBorrowerEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    String packName = userPackage.getPackageName();
+                    String uId = "";
+                    for(QueryDocumentSnapshot document : task.getResult()){
+                        uId = document.get("userId").toString();
+                    }
+                    mDatabase.collection(USER_COLLECTION).document(uId).collection(BORROW_PACKAGE_COLLECTION).document(packName).set(userPackage);
+
+                    if (getFragmentManager() != null) {
+                        getFragmentManager().popBackStack();
+                    }
+                }else{
+                    String packName = userPackage.getPackageName();
+                    String uId = "";
+                    for(QueryDocumentSnapshot document : task.getResult()){
+                        uId = document.get("userId").toString();
+                    }
+                    mDatabase.collection(USER_COLLECTION).document(uId).collection(BORROW_PACKAGE_COLLECTION).document(packName).set(userPackage);
+                }
+
+            }
+        });
 
     }
 

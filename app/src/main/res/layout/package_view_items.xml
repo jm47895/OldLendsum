@@ -6,7 +6,7 @@
     android:id="@+id/list"
     android:layout_margin="4dp"
     android:layout_width="match_parent"
-    android:layout_height="180dp">
+    android:layout_height="200dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -68,27 +68,34 @@
             app:layout_constraintVertical_bias="0" />
 
         <TextView
+            android:id="@+id/lentToTextView"
+            style="@style/CustomDefaultSmallText"
+            android:text="lent to "
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
+            app:layout_constraintTop_toBottomOf="@+id/dummyBundleTitleTextView"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"/>
+
+        <TextView
             android:id="@+id/dummyUsernameTextview"
             style="@style/CustomDefaultSmallText"
-            android:layout_height="18dp"
-            android:text="lent to username"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
-            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/dummyBundleTitleTextView"
-            app:layout_constraintVertical_bias="0" />
+            android:text="username"
+            app:layout_constraintBottom_toBottomOf="@+id/lentToTextView"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintStart_toEndOf="@+id/lentToTextView"
+            app:layout_constraintTop_toTopOf="@+id/lentToTextView" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView2"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dummyUsernameTextview">
+            app:layout_constraintBottom_toTopOf="@+id/horizontal66Guide"
+            app:layout_constraintTop_toBottomOf="@+id/lentToTextView"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -96,13 +103,14 @@
             android:id="@+id/dummyBundleTitleTextView"
             style="@style/BundleHeaderText"
             android:text="Bundle"
-            app:layout_constraintBottom_toTopOf="@+id/dummyUsernameTextview"
-            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@+id/lentToTextView"
+            app:layout_constraintTop_toBottomOf="@id/horizontalTopGuide"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintVertical_chainStyle="packed"
+            />
 
         <TextView
             android:id="@+id/dummyItemsSubTextView"

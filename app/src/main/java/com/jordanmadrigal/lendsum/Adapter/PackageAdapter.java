@@ -20,9 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 
-import java.util.List;
-
-import static com.jordanmadrigal.lendsum.Utility.Constants.PACKAGE_COLLECTION;
+import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
 public class PackageAdapter extends FirestoreRecyclerAdapter<Package, PackageAdapter.PackageViewHolder> {
@@ -178,7 +176,7 @@ public class PackageAdapter extends FirestoreRecyclerAdapter<Package, PackageAda
     @Override
     public void onBindViewHolder(@NonNull PackageViewHolder holder, int position, @NonNull Package model) {
 
-        holder.mUserNameText.setText(model.getUserName());
+        holder.mUserNameText.setText(model.getBorrowerName());
         holder.mPackageHeaderText.setText(model.getPackageName());
         holder.mItemListText.setText(model.getItemList());
         holder.mRateParaText.setText(model.getPackageRate());
@@ -207,7 +205,7 @@ public class PackageAdapter extends FirestoreRecyclerAdapter<Package, PackageAda
         FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         DocumentReference packRef = mDatabase.collection(USER_COLLECTION)
-                .document(mUser.getUid()).collection(PACKAGE_COLLECTION).document(packageHeader);
+                .document(mUser.getUid()).collection(LEND_PACKAGE_COLLECTION).document(packageHeader);
 
         packRef.delete();
     }
