@@ -70,7 +70,7 @@
         <TextView
             android:id="@+id/lentToTextView"
             style="@style/CustomDefaultSmallText"
-            android:text="lent to "
+            android:text="lending to "
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
             app:layout_constraintTop_toBottomOf="@+id/dummyBundleTitleTextView"
@@ -127,19 +127,19 @@
         <TextView
             android:id="@+id/dummyItemListTextView"
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
+            android:layout_height="wrap_content"
             android:text="list of items"
             android:textColor="@color/headerBlack"
-            app:layout_constraintBottom_toTopOf="@+id/dummyRateSubTextView"
+            app:layout_constraintBottom_toTopOf="@+id/dummyDaysLeftTextView"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toRightOf="@id/verticalStartGuide"
             app:layout_constraintRight_toLeftOf="@id/verticalEndGuide"
             app:layout_constraintTop_toBottomOf="@+id/dummyItemsSubTextView" />
 
         <TextView
-            android:id="@+id/dummyRateSubTextView"
+            android:id="@+id/dummyDaysLeftTextView"
             style="@style/BundleSubText"
-            android:text="Days Lent"
+            android:text="Days Left"
             app:layout_constraintBottom_toTopOf="@+id/dummyRateParagraphTextView"
             app:layout_constraintEnd_toStartOf="@+id/dummyReturnDateSubTextView"
             app:layout_constraintHorizontal_bias="0"
@@ -153,20 +153,20 @@
             android:text="days"
             app:layout_constraintBottom_toTopOf="@+id/horizontalBottomGuide"
             app:layout_constraintEnd_toStartOf="@+id/dummyReturnDateParagraphTextView"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/dummyRateSubTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/dummyDaysLeftTextView" />
 
         <TextView
             android:id="@+id/dummyReturnDateSubTextView"
             style="@style/BundleSubText"
             android:layout_marginStart="60dp"
             android:text="Return Date"
-            app:layout_constraintBottom_toBottomOf="@+id/dummyRateSubTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/dummyDaysLeftTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dummyRateSubTextView"
-            app:layout_constraintTop_toTopOf="@+id/dummyRateSubTextView" />
+            app:layout_constraintStart_toEndOf="@+id/dummyDaysLeftTextView"
+            app:layout_constraintTop_toTopOf="@+id/dummyDaysLeftTextView" />
 
         <TextView
             android:id="@+id/dummyReturnDateParagraphTextView"

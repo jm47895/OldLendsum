@@ -23,9 +23,9 @@ import com.jordanmadrigal.lendsum.R;
 import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
-public class PackageAdapter extends FirestoreRecyclerAdapter<Package, PackageAdapter.PackageViewHolder> {
+public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPackageAdapter.PackageViewHolder> {
 
-    public PackageAdapter(@NonNull FirestoreRecyclerOptions<Package> options) {
+    public LendPackageAdapter(@NonNull FirestoreRecyclerOptions<Package> options) {
         super(options);
     }
 
@@ -43,7 +43,7 @@ public class PackageAdapter extends FirestoreRecyclerAdapter<Package, PackageAda
 
             mUserNameText = itemView.findViewById(R.id.dummyUsernameTextview);
             mItemsSubtext = itemView.findViewById(R.id.dummyItemsSubTextView);
-            mRateSubtext = itemView.findViewById(R.id.dummyRateSubTextView);
+            mRateSubtext = itemView.findViewById(R.id.dummyDaysLeftTextView);
             mReturnDateSubtext = itemView.findViewById(R.id.dummyReturnDateSubTextView);
             mCardView = itemView.findViewById(R.id.list);
             mExpandBtn = itemView.findViewById(R.id.packageExpandBtn);

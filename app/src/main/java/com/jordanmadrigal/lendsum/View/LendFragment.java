@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.jordanmadrigal.lendsum.Adapter.PackageAdapter;
+import com.jordanmadrigal.lendsum.Adapter.LendPackageAdapter;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 
@@ -30,7 +30,7 @@ public class LendFragment extends Fragment{
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private PackageAdapter adapter;
+    private LendPackageAdapter adapter;
 
     public LendFragment() {
         // Required empty public constructor
@@ -52,7 +52,7 @@ public class LendFragment extends Fragment{
         mRecyclerView = rootView.findViewById(R.id.packageRecyclerList);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        adapter = new PackageAdapter(options);
+        adapter = new LendPackageAdapter(options);
         mRecyclerView.setAdapter(adapter);
 
 

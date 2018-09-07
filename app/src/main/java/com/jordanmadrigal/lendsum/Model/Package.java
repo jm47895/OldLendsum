@@ -27,14 +27,6 @@ public class Package {
     }
 
 
-
-    public Package(String packageName, String itemDescription, String packageRate, String returnDate) {
-        this.packageName = packageName;
-        this.itemDescription = itemDescription;
-        this.packageRate = packageRate;
-        this.returnDate = returnDate;
-    }
-
     public String getPackageName() {
         return packageName;
     }
@@ -43,11 +35,6 @@ public class Package {
         this.packageName = packageName;
     }
 
-    public String getItemDescription() {
-        return itemDescription;
-    }
-
-    public void setItemDescription(String itemDescription) { this.itemDescription = itemDescription; }
 
     public String getPackageRate() {
         return packageRate;
