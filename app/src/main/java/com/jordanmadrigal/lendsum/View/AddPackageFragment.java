@@ -24,13 +24,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
-import com.jordanmadrigal.lendsum.ViewModel.DateViewModel;
+import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
@@ -45,7 +46,7 @@ public class AddPackageFragment extends Fragment{
 
     private FirebaseFirestore mDatabase;
     private FirebaseUser mUser;
-    private DateViewModel mDateModel;
+    private DataViewModel mDataModel;
     private TextView mReturnDateTextView;
     private EditText mPackHeaderText, mItemList, mBorrowerEmail;
     private Button mAddPackBtn;
@@ -63,7 +64,7 @@ public class AddPackageFragment extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mDateModel = ViewModelProviders.of(getActivity()).get(DateViewModel.class);
+        mDataModel = ViewModelProviders.of(getActivity()).get(DataViewModel.class);
     }
 
     @Override
@@ -139,7 +140,7 @@ public class AddPackageFragment extends Fragment{
                 String packName = mPackHeaderText.getText().toString().trim();
                 String borrowerEmail = mBorrowerEmail.getText().toString().trim();
                 String itemList = mItemList.getText().toString().trim();
-                String date = mDateModel.getSelected().getValue();
+                String date = mDataModel.getSelectedDate().getValue();
                 boolean indefinite = mIndefinite;
 
                 if(mIndefSwitch.isChecked()){
@@ -155,17 +156,16 @@ public class AddPackageFragment extends Fragment{
                 }else{
 
                     String uId = mUser.getUid();
-                    Package userPackage = new Package(packName, borrowerEmail, itemList, indefinite, date);
 
-                    writePackageToLenderFirestore(uId, userPackage);
-
-                    writePackageToBorrowerFirestore(userPackage);
+                    writePackageToFirestore(uId, packName, borrowerEmail, itemList, indefinite, date);
 
                     mActionBarListener.onActionBarListener(R.string.app_name);
 
                     Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
 
-                    getFragmentManager().popBackStack();
+                    if (getFragmentManager() != null) {
+                        getFragmentManager().popBackStack();
+                    }
                 }
             }
         });
@@ -185,44 +185,35 @@ public class AddPackageFragment extends Fragment{
         }
     }
 
-    public void writePackageToLenderFirestore(String uId, Package userPackage){
+    public void writePackageToFirestore(String uId, String packName, String borrowerEmail, String itemList, boolean indefinite, String date){
 
-        packageName = userPackage.getPackageName();
+        //Add to lender collection
+        DocumentReference packRef = mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION).document();
+        String packId = packRef.getId();
 
-        //Add to firestore database
-        mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION).document(packageName).set(userPackage);
+        Package userPackage = new Package(packName, packId, borrowerEmail, itemList, indefinite, date);
+        packRef.set(userPackage);
 
-    }
-
-    public void writePackageToBorrowerFirestore(Package userPackage){
+        //Add to borrower collection with same packUid
         CollectionReference borrowerRef = mDatabase.collection(USER_COLLECTION);
         borrowerRef.whereEqualTo("email", userPackage.getBorrowerEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-                    String packName = userPackage.getPackageName();
-                    String uId = "";
-                    for(QueryDocumentSnapshot document : task.getResult()){
-                        uId = document.get("userId").toString();
-                    }
-                    mDatabase.collection(USER_COLLECTION).document(uId).collection(BORROW_PACKAGE_COLLECTION).document(packName).set(userPackage);
 
-                    if (getFragmentManager() != null) {
-                        getFragmentManager().popBackStack();
-                    }
-                }else{
-                    String packName = userPackage.getPackageName();
-                    String uId = "";
+                    String borrowerId = "";
                     for(QueryDocumentSnapshot document : task.getResult()){
-                        uId = document.get("userId").toString();
+                        borrowerId = document.getReference().getId();
                     }
-                    mDatabase.collection(USER_COLLECTION).document(uId).collection(BORROW_PACKAGE_COLLECTION).document(packName).set(userPackage);
+
+                    mDatabase.collection(USER_COLLECTION).document(borrowerId).collection(BORROW_PACKAGE_COLLECTION).document(packId).set(userPackage);
+
                 }
-
             }
         });
-
     }
+
+
 
     @Override
     public void onDetach() {

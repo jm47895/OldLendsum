@@ -213,6 +213,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/packageMsgBtn"
             app:layout_constraintTop_toTopOf="@+id/packageMsgBtn" />
+
+        <!--This xml is required for firestore core functionality. Do not alter or edit-->
+        <TextView
+            android:id="@+id/packageEmailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

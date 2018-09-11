@@ -18,7 +18,7 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 
 import com.jordanmadrigal.lendsum.R;
-import com.jordanmadrigal.lendsum.ViewModel.DateViewModel;
+import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,7 +30,7 @@ import java.util.Locale;
 public class CalendarFragment extends Fragment {
 
     private static final String LOG_TAG = CalendarFragment.class.getSimpleName();
-    private DateViewModel model;
+    private DataViewModel model;
     private ImageButton mCancelBtn;
     private Button mAddDateBtn;
     private DatePicker mDatePicker;
@@ -60,7 +60,7 @@ public class CalendarFragment extends Fragment {
         mCancelBtn = view.findViewById(R.id.addDateCancelBtn);
         mAddDateBtn = view.findViewById(R.id.addDateBtn);
         mDatePicker = view.findViewById(R.id.calendar);
-        model = ViewModelProviders.of(getActivity()).get(DateViewModel.class);
+        model = ViewModelProviders.of(getActivity()).get(DataViewModel.class);
 
         mCancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +89,7 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                model.setSelected(date);
+                model.setSelectedDate(date);
 
                 getParentFragment().getChildFragmentManager().popBackStackImmediate();
 

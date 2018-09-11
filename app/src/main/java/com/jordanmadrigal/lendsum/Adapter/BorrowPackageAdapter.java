@@ -81,7 +81,7 @@ public class BorrowPackageAdapter extends FirestoreRecyclerAdapter<Package, Borr
 
             //collapse and expand functionality and animation
 
-            //Assign min height to cardvView
+            //Assign min height to cardView
             final int height = 600;
 
             mCardView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

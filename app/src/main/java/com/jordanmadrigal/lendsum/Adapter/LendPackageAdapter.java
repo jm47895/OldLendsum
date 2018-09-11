@@ -1,6 +1,7 @@
 package com.jordanmadrigal.lendsum.Adapter;
 
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -13,20 +14,28 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 
+import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
 public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPackageAdapter.PackageViewHolder> {
 
-    public LendPackageAdapter(@NonNull FirestoreRecyclerOptions<Package> options) {
+    private Context context;
+    public LendPackageAdapter(@NonNull FirestoreRecyclerOptions<Package> options, Context context) {
         super(options);
+        this.context = context;
     }
 
     public class PackageViewHolder extends RecyclerView.ViewHolder{
@@ -34,7 +43,7 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
         private int rotationAngle = 0;
         private int minHeight;
         private CardView mCardView;
-        private TextView mPackageHeaderText, mItemListText, mRateParaText, mReturnDateParaText, mItemsSubtext, mRateSubtext, mReturnDateSubtext, mUserNameText;
+        private TextView mPackageHeaderText, mItemListText, mRateParaText, mReturnDateParaText, mItemsSubtext, mRateSubtext, mReturnDateSubtext, mUserNameText, mEmailText;
         private ImageButton mExpandBtn, mMsgBtn, mEditBtn, mDeleteBtn;
 
 
@@ -54,9 +63,11 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
             mRateParaText = itemView.findViewById(R.id.dummyRateParagraphTextView);
             mReturnDateParaText = itemView.findViewById(R.id.dummyReturnDateParagraphTextView);
             mDeleteBtn = itemView.findViewById(R.id.packageDeleteBtn);
+            mEmailText = itemView.findViewById(R.id.packageEmailTextView);
 
             hideViews();
 
+            mEmailText.setVisibility(View.INVISIBLE);
             //collapse and expand functionality and animation
 
             //Assign min height to cardvView
@@ -177,6 +188,7 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
     public void onBindViewHolder(@NonNull PackageViewHolder holder, int position, @NonNull Package model) {
 
         holder.mUserNameText.setText(model.getBorrowerName());
+        holder.mEmailText.setText(model.getBorrowerEmail());
         holder.mPackageHeaderText.setText(model.getPackageName());
         holder.mItemListText.setText(model.getItemList());
         holder.mRateParaText.setText(model.getPackageRate());
@@ -191,8 +203,9 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
             @Override
             public void onClick(View view) {
                 String packHeader = holder.mPackageHeaderText.getText().toString();
+                String borrowerEmail = holder.mEmailText.getText().toString();
 
-                deleteDataFromFirestore(packHeader);
+                deleteDataFromFirestore(packHeader, borrowerEmail);
 
             }
         });
@@ -200,14 +213,46 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
     }
 
 
-    public void deleteDataFromFirestore(String packageHeader){
+    public void deleteDataFromFirestore(String packageHeader, String borrowEmail){
 
-        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference packRef = mDatabase.collection(USER_COLLECTION)
-                .document(mUser.getUid()).collection(LEND_PACKAGE_COLLECTION).document(packageHeader);
+        String uId = mUser.getUid();
 
-        packRef.delete();
+        //Delete lender package from firestore
+        CollectionReference lenderPackRef = database.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION);
+        lenderPackRef.whereEqualTo("packageName", packageHeader).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    document.getReference().delete();
+                }
+            }
+        });
+
+        //Delete borrower from firestore
+        CollectionReference userColRef = database.collection(USER_COLLECTION);
+        userColRef.whereEqualTo("email", borrowEmail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+            String borrowerUId = "";
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (QueryDocumentSnapshot userDocument : task.getResult()) {
+                    borrowerUId = userDocument.getReference().getId();
+                }
+                CollectionReference borrowPackRef = database.collection(USER_COLLECTION).document(borrowerUId).collection(BORROW_PACKAGE_COLLECTION);
+                borrowPackRef.whereEqualTo("packageName", packageHeader).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot packDocument : task.getResult()) {
+                            packDocument.getReference().delete();
+                        }
+                    }
+                });
+            }
+        });
+
+
     }
 
 

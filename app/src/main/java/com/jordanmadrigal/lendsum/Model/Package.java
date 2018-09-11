@@ -3,6 +3,7 @@ package com.jordanmadrigal.lendsum.Model;
 public class Package {
 
     private String packageName;
+    private String packId;
     private String itemList;
     private float itemPrice;
     private String itemDescription;
@@ -18,8 +19,9 @@ public class Package {
     public Package() {
     }
 
-    public Package(String packageName, String borrowerEmail, String itemList, boolean indefinite, String returnDate) {
+    public Package(String packageName, String packId, String borrowerEmail, String itemList, boolean indefinite, String returnDate) {
         this.packageName = packageName;
+        this.packId = packId;
         this.borrowerEmail = borrowerEmail;
         this.itemList = itemList;
         this.indefinite = indefinite;
@@ -35,6 +37,13 @@ public class Package {
         this.packageName = packageName;
     }
 
+    public String getPackId() {
+        return packId;
+    }
+
+    public void setPackId(String packId) {
+        this.packId = packId;
+    }
 
     public String getPackageRate() {
         return packageRate;

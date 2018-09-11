@@ -52,7 +52,7 @@ public class LendFragment extends Fragment{
         mRecyclerView = rootView.findViewById(R.id.packageRecyclerList);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        adapter = new LendPackageAdapter(options);
+        adapter = new LendPackageAdapter(options, getContext());
         mRecyclerView.setAdapter(adapter);
 
 
