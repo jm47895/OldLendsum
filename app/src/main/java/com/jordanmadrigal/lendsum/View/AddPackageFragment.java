@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -19,10 +20,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -55,8 +53,7 @@ public class AddPackageFragment extends Fragment{
     private Button mAddPackBtn;
     private Switch mIndefSwitch;
     private ImageButton mDatePickerBtn, mCloseBtn;
-    private boolean mIndefinite;
-    private String packageName;
+    private boolean isIndefinite;
     private OnActivityToFragmentListener mActionBarListener, mFragmentVisibilityListener;
 
     public AddPackageFragment() {
@@ -83,7 +80,7 @@ public class AddPackageFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mIndefinite = false;
+        isIndefinite = false;
         mDatabase = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mCloseBtn = view.findViewById(R.id.createPackCloseBtn);
@@ -100,6 +97,7 @@ public class AddPackageFragment extends Fragment{
             public void onClick(View view) {
                 mFragmentVisibilityListener.onFragmentVisible(false);
                 mActionBarListener.onActionBarListener(R.string.app_name);
+                hideKeyboard();
                 getFragmentManager().popBackStack();
             }
         });
@@ -110,11 +108,11 @@ public class AddPackageFragment extends Fragment{
                 if(isChecked){
                     mDatePickerBtn.setVisibility(View.INVISIBLE);
                     mReturnDateTextView.setVisibility(View.INVISIBLE);
-                    mIndefinite = true;
+                    isIndefinite = true;
                 }else{
                     mDatePickerBtn.setVisibility(View.VISIBLE);
                     mReturnDateTextView.setVisibility(View.VISIBLE);
-                    mIndefinite = false;
+                    isIndefinite = false;
                 }
             }
         });
@@ -135,34 +133,34 @@ public class AddPackageFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
-                String packHeadTextErr = "Package name cannot be left blank";
-                String packItemListErr = "Item List cannot be left blank";
-                String packBorrowerNameErr = "Borrower name cannot be left blank";
+                String blankHeadTextErr = "Package name cannot be left blank";
+                String blankItemListErr = "Item List cannot be left blank";
+                String blankEmailErr = "Borrower email cannot be left blank";
 
                 String packName = mPackHeaderText.getText().toString().trim();
-                String borrowerEmail = mBorrowerEmail.getText().toString().trim();
+                String borrowerEmail = mBorrowerEmail.getText().toString().trim().toLowerCase();
                 String itemList = mItemList.getText().toString().trim();
                 String date = mDataModel.getSelectedDate().getValue();
-                boolean indefinite = mIndefinite;
+                boolean indefinite = isIndefinite;
 
                 if(mIndefSwitch.isChecked()){
                     date = null;
                 }
 
                 if(TextUtils.isEmpty(packName)){
-                    mPackHeaderText.setError(packHeadTextErr);
-                }else if(TextUtils.isEmpty(itemList)){
-                    mItemList.setError(packItemListErr);
+                    mPackHeaderText.setError(blankHeadTextErr);
                 }else if(TextUtils.isEmpty(borrowerEmail)){
-                    mBorrowerEmail.setError(packBorrowerNameErr);
+                    mBorrowerEmail.setError(blankEmailErr);
+                }else if(TextUtils.isEmpty(itemList)){
+                    mItemList.setError(blankItemListErr);
                 }else{
-
                     String uId = mUser.getUid();
 
                     writePackageToFirestore(uId, packName, borrowerEmail, itemList, indefinite, date);
-
                 }
+
             }
+
         });
 
 
@@ -182,6 +180,7 @@ public class AddPackageFragment extends Fragment{
 
     public void writePackageToFirestore(String uId, String packName, String borrowerEmail, String itemList, boolean indefinite, String date){
 
+
         //Add to lender collection
         DocumentReference packRef = mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION).document();
         String packId = packRef.getId();
@@ -194,10 +193,11 @@ public class AddPackageFragment extends Fragment{
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
-
+                    boolean isValidUser = false;
                     String borrowerId = "";
                     for(QueryDocumentSnapshot document : task.getResult()){
                         if(document.exists()) {
+                            isValidUser = true;
                             mActionBarListener.onActionBarListener(R.string.app_name);
                             borrowerId = document.getReference().getId();
                             packRef.set(userPackage);
@@ -205,16 +205,29 @@ public class AddPackageFragment extends Fragment{
                             getFragmentManager().popBackStack();
                             Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
                             mFragmentVisibilityListener.onFragmentVisible(false);
+                            hideKeyboard();
                         }else{
-                            mBorrowerEmail.setError("Error");
+                            isValidUser = false;
                         }
                     }
+                    String invalidEmailErr = "User does not exist in Lendsum";
 
+                    if(!isValidUser){
+                        mBorrowerEmail.setError(invalidEmailErr);
+                    }
                 }
+
             }
+
         });
+
+
     }
 
+    public void hideKeyboard(){
+        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    }
     @Override
     public void onDetach() {
         super.onDetach();
