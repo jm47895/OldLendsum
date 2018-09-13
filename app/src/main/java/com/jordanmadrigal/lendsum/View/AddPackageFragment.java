@@ -19,7 +19,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -136,7 +139,6 @@ public class AddPackageFragment extends Fragment{
                 String packItemListErr = "Item List cannot be left blank";
                 String packBorrowerNameErr = "Borrower name cannot be left blank";
 
-                mFragmentVisibilityListener.onFragmentVisible(false);
                 String packName = mPackHeaderText.getText().toString().trim();
                 String borrowerEmail = mBorrowerEmail.getText().toString().trim();
                 String itemList = mItemList.getText().toString().trim();
@@ -159,13 +161,6 @@ public class AddPackageFragment extends Fragment{
 
                     writePackageToFirestore(uId, packName, borrowerEmail, itemList, indefinite, date);
 
-                    mActionBarListener.onActionBarListener(R.string.app_name);
-
-                    Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
-
-                    if (getFragmentManager() != null) {
-                        getFragmentManager().popBackStack();
-                    }
                 }
             }
         });
@@ -192,28 +187,33 @@ public class AddPackageFragment extends Fragment{
         String packId = packRef.getId();
 
         Package userPackage = new Package(packName, packId, borrowerEmail, itemList, indefinite, date);
-        packRef.set(userPackage);
 
         //Add to borrower collection with same packUid
         CollectionReference borrowerRef = mDatabase.collection(USER_COLLECTION);
-        borrowerRef.whereEqualTo("email", userPackage.getBorrowerEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        borrowerRef.whereEqualTo("email", borrowerEmail).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
 
                     String borrowerId = "";
                     for(QueryDocumentSnapshot document : task.getResult()){
-                        borrowerId = document.getReference().getId();
+                        if(document.exists()) {
+                            mActionBarListener.onActionBarListener(R.string.app_name);
+                            borrowerId = document.getReference().getId();
+                            packRef.set(userPackage);
+                            mDatabase.collection(USER_COLLECTION).document(borrowerId).collection(BORROW_PACKAGE_COLLECTION).document(packId).set(userPackage);
+                            getFragmentManager().popBackStack();
+                            Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
+                            mFragmentVisibilityListener.onFragmentVisible(false);
+                        }else{
+                            mBorrowerEmail.setError("Error");
+                        }
                     }
-
-                    mDatabase.collection(USER_COLLECTION).document(borrowerId).collection(BORROW_PACKAGE_COLLECTION).document(packId).set(userPackage);
 
                 }
             }
         });
     }
-
-
 
     @Override
     public void onDetach() {
