@@ -21,16 +21,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.Package;
+import com.jordanmadrigal.lendsum.Model.User;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
@@ -49,7 +52,7 @@ public class AddPackageFragment extends Fragment{
     private FirebaseUser mUser;
     private DataViewModel mDataModel;
     private TextView mReturnDateTextView;
-    private EditText mPackHeaderText, mItemList, mBorrowerEmail;
+    private EditText mPackHeaderText, mItemList, mBorrowerEmail, mBorrowerName;
     private Button mAddPackBtn;
     private Switch mIndefSwitch;
     private ImageButton mDatePickerBtn, mCloseBtn;
@@ -85,6 +88,7 @@ public class AddPackageFragment extends Fragment{
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mCloseBtn = view.findViewById(R.id.createPackCloseBtn);
         mPackHeaderText = view.findViewById(R.id.createPackName);
+        mBorrowerName= view.findViewById(R.id.createPackUserName);
         mBorrowerEmail = view.findViewById(R.id.createPackBorrowerEmail);
         mItemList = view.findViewById(R.id.createPackItemList);
         mAddPackBtn = view.findViewById(R.id.createPackBtn);
@@ -132,13 +136,15 @@ public class AddPackageFragment extends Fragment{
         mAddPackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String blankHeadTextErr = "Package name cannot be left blank";
+                String blankBorrowerName = "Borrower name cannot be left blank";
+                String blankBorrowerEmailErr = "Borrower email cannot be left blank";
+                String blankPackTextErr = "Package name cannot be left blank";
                 String blankItemListErr = "Item List cannot be left blank";
-                String blankEmailErr = "Borrower email cannot be left blank";
 
-                String packName = mPackHeaderText.getText().toString().trim();
+
+                String borrowerName = mBorrowerName.getText().toString().trim();
                 String borrowerEmail = mBorrowerEmail.getText().toString().trim().toLowerCase();
+                String packName = mPackHeaderText.getText().toString().trim();
                 String itemList = mItemList.getText().toString().trim();
                 String date = mDataModel.getSelectedDate().getValue();
                 boolean indefinite = isIndefinite;
@@ -147,16 +153,19 @@ public class AddPackageFragment extends Fragment{
                     date = null;
                 }
 
-                if(TextUtils.isEmpty(packName)){
-                    mPackHeaderText.setError(blankHeadTextErr);
+                if(TextUtils.isEmpty(borrowerName)){
+                    mBorrowerName.setError(blankBorrowerName);
                 }else if(TextUtils.isEmpty(borrowerEmail)){
-                    mBorrowerEmail.setError(blankEmailErr);
+                    mBorrowerEmail.setError(blankBorrowerEmailErr);
+                }else if(TextUtils.isEmpty(packName)){
+                    mPackHeaderText.setError(blankPackTextErr);
                 }else if(TextUtils.isEmpty(itemList)){
                     mItemList.setError(blankItemListErr);
                 }else{
                     String uId = mUser.getUid();
 
-                    writePackageToFirestore(uId, packName, borrowerEmail, itemList, indefinite, date);
+                    writePackageToFirestore(uId,borrowerName, borrowerEmail, packName, itemList, indefinite, date);
+
                 }
 
             }
@@ -178,14 +187,14 @@ public class AddPackageFragment extends Fragment{
         }
     }
 
-    public void writePackageToFirestore(String uId, String packName, String borrowerEmail, String itemList, boolean indefinite, String date){
+    public void writePackageToFirestore(String uId, String borrowerName, String borrowerEmail, String packName, String itemList, boolean indefinite, String date){
 
 
         //Add to lender collection
         DocumentReference packRef = mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION).document();
         String packId = packRef.getId();
-
-        Package userPackage = new Package(packName, packId, borrowerEmail, itemList, indefinite, date);
+        String lenderName = mDataModel.getSelectedLenderName().getValue();
+        Package userPackage = new Package(lenderName, borrowerName, borrowerEmail, packId, packName, itemList, indefinite, date);
 
         //Add to borrower collection with same packUid
         CollectionReference borrowerRef = mDatabase.collection(USER_COLLECTION);
@@ -228,6 +237,8 @@ public class AddPackageFragment extends Fragment{
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
+
+
     @Override
     public void onDetach() {
         super.onDetach();

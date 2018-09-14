@@ -52,18 +52,6 @@
             android:label="Settings"/>
 
         <activity
-            android:name=".View.FriendSearchActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".View.HomeActivity"
-            android:label="Search Friends"/>
-
-        <activity
-            android:name=".View.ManagePaymentActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".View.HomeActivity"
-            android:label="Manage Payments"/>
-
-        <activity
             android:name=".View.InviteFriendsActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".View.HomeActivity"

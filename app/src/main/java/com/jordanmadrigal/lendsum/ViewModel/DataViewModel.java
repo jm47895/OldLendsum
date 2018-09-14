@@ -6,19 +6,21 @@ import android.arch.lifecycle.ViewModel;
 
 public class DataViewModel extends ViewModel {
 
-    private final MutableLiveData<String> selected  = new MutableLiveData<>();
+    private final MutableLiveData<String> selectedDate  = new MutableLiveData<>();
+    private final MutableLiveData<String> selectedLenderName = new MutableLiveData<>();
 
     public void setSelectedDate(String date){
-        selected.setValue(date);
+        selectedDate.setValue(date);
     }
 
     public LiveData<String> getSelectedDate(){
-        return selected;
+        return selectedDate;
     }
 
-    public void setSelectedUid(String uId){
-        selected.setValue(uId);
+
+    public void setSelectedLenderName(String name){
+        selectedLenderName.setValue(name);
     }
 
-    public LiveData<String> getSelectedUid(){return selected;}
+    public LiveData<String> getSelectedLenderName(){return selectedLenderName;}
 }

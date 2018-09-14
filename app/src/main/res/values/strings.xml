@@ -36,4 +36,6 @@
     <string name="create_package">Create Package</string>
     <string name="add_date">Add Date</string>
     <string name="indef_abbr">Indef</string>
+    <string name="borrower_name">Borrower Name</string>
+    <string name="borrower_email">Borrower Email</string>
 </resources>

@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorSecondaryLight"
             android:src="@drawable/ic_close_black_24dp"
-            app:layout_constraintBottom_toTopOf="@+id/createPackName"
+            app:layout_constraintBottom_toTopOf="@+id/createPackUserName"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/verticalStartGuide"
@@ -55,21 +55,29 @@
             app:layout_constraintVertical_chainStyle="spread_inside" />
 
         <EditText
+            android:id="@+id/createPackUserName"
+            style="@style/CustomEditText"
+            android:hint="@string/borrower_name"
+            app:layout_constraintTop_toBottomOf="@+id/createPackCloseBtn"
+            app:layout_constraintBottom_toTopOf="@id/createPackBorrowerEmail"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"/>
+
+        <EditText
             android:id="@+id/createPackName"
             style="@style/CustomEditText"
             android:hint="@string/package_name"
-            app:layout_constraintBottom_toTopOf="@+id/createPackBorrowerEmail"
+            app:layout_constraintBottom_toTopOf="@+id/createPackItemList"
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/createPackCloseBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/createPackBorrowerEmail" />
 
         <EditText
             android:id="@+id/createPackBorrowerEmail"
             style="@style/CustomEditText"
-            android:hint="Borrower Email"
-            app:layout_constraintBottom_toTopOf="@+id/createPackItemList"
-            app:layout_constraintTop_toBottomOf="@+id/createPackName"
+            android:hint="@string/borrower_email"
+            app:layout_constraintBottom_toTopOf="@+id/createPackName"
+            app:layout_constraintTop_toBottomOf="@+id/createPackUserName"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
             tools:layout_editor_absoluteX="0dp" />
@@ -82,7 +90,7 @@
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/createPackBorrowerEmail" />
+            app:layout_constraintTop_toBottomOf="@+id/createPackName" />
 
         <TextView
             android:id="@+id/createPackIndefTextview"

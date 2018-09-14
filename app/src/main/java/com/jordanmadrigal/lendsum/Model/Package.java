@@ -13,16 +13,19 @@ public class Package {
     private int lendTimePeriod;
     private int maturityDate;
     private String returnDate;
+    private String lenderName;
     private String borrowerName;
     private String borrowerEmail;
 
     public Package() {
     }
 
-    public Package(String packageName, String packId, String borrowerEmail, String itemList, boolean indefinite, String returnDate) {
-        this.packageName = packageName;
-        this.packId = packId;
+    public Package(String lenderName, String borrowerName, String borrowerEmail, String packId, String packageName, String itemList, boolean indefinite, String returnDate) {
+        this.lenderName = lenderName;
+        this.borrowerName = borrowerName;
         this.borrowerEmail = borrowerEmail;
+        this.packId = packId;
+        this.packageName = packageName;
         this.itemList = itemList;
         this.indefinite = indefinite;
         this.returnDate = returnDate;
@@ -59,6 +62,14 @@ public class Package {
 
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public String getLenderName() {
+        return lenderName;
+    }
+
+    public void setLenderName(String lenderName) {
+        this.lenderName = lenderName;
     }
 
     public String getBorrowerName() {

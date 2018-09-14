@@ -19,7 +19,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -44,7 +43,7 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
         private int minHeight;
         private CardView mCardView;
         private TextView mPackageHeaderText, mItemListText, mRateParaText, mReturnDateParaText, mItemsSubtext, mRateSubtext, mReturnDateSubtext, mUserNameText, mEmailText;
-        private ImageButton mExpandBtn, mMsgBtn, mEditBtn, mDeleteBtn;
+        private ImageButton mExpandBtn, mEditBtn, mDeleteBtn;
 
 
         public PackageViewHolder(View itemView) {
@@ -56,11 +55,10 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
             mReturnDateSubtext = itemView.findViewById(R.id.dummyReturnDateSubTextView);
             mCardView = itemView.findViewById(R.id.list);
             mExpandBtn = itemView.findViewById(R.id.packageExpandBtn);
-            mMsgBtn = itemView.findViewById(R.id.packageMsgBtn);
             mEditBtn = itemView.findViewById(R.id.editBtn);
             mPackageHeaderText = itemView.findViewById(R.id.dummyBundleTitleTextView);
             mItemListText = itemView.findViewById(R.id.dummyItemListTextView);
-            mRateParaText = itemView.findViewById(R.id.dummyRateParagraphTextView);
+            mRateParaText = itemView.findViewById(R.id.dummyDaysLeftParagraphTextView);
             mReturnDateParaText = itemView.findViewById(R.id.dummyReturnDateParagraphTextView);
             mDeleteBtn = itemView.findViewById(R.id.packageDeleteBtn);
             mEmailText = itemView.findViewById(R.id.packageEmailTextView);
@@ -152,7 +150,6 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
             mItemListText.setVisibility(View.VISIBLE);
             mRateParaText.setVisibility(View.VISIBLE);
             mReturnDateParaText.setVisibility(View.VISIBLE);
-            mMsgBtn.setVisibility(View.VISIBLE);
             mEditBtn.setVisibility(View.VISIBLE);
             mDeleteBtn.setVisibility(View.VISIBLE);
 
@@ -165,7 +162,6 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
             mItemListText.setVisibility(View.INVISIBLE);
             mRateParaText.setVisibility(View.INVISIBLE);
             mReturnDateParaText.setVisibility(View.INVISIBLE);
-            mMsgBtn.setVisibility(View.INVISIBLE);
             mEditBtn.setVisibility(View.INVISIBLE);
             mDeleteBtn.setVisibility(View.INVISIBLE);
         }

@@ -71,19 +71,19 @@
             android:id="@+id/lentToTextView"
             style="@style/CustomDefaultSmallText"
             android:text="lending to "
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
-            app:layout_constraintTop_toBottomOf="@+id/dummyBundleTitleTextView"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"/>
+            app:layout_constraintTop_toBottomOf="@+id/dummyBundleTitleTextView" />
 
         <TextView
             android:id="@+id/dummyUsernameTextview"
             style="@style/CustomDefaultSmallText"
-            app:layout_constraintHorizontal_bias="0"
             android:text="username"
             app:layout_constraintBottom_toBottomOf="@+id/lentToTextView"
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/lentToTextView"
             app:layout_constraintTop_toTopOf="@+id/lentToTextView" />
 
@@ -93,9 +93,9 @@
             android:layout_height="120dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/horizontal66Guide"
-            app:layout_constraintTop_toBottomOf="@+id/lentToTextView"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide">
+            app:layout_constraintTop_toBottomOf="@+id/lentToTextView">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -103,14 +103,13 @@
             android:id="@+id/dummyBundleTitleTextView"
             style="@style/BundleHeaderText"
             android:text="Bundle"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toTopOf="@+id/lentToTextView"
-            app:layout_constraintTop_toBottomOf="@id/horizontalTopGuide"
-            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
-            app:layout_constraintVertical_chainStyle="packed"
-            />
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@id/horizontalTopGuide"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/dummyItemsSubTextView"
@@ -140,7 +139,7 @@
             android:id="@+id/dummyDaysLeftTextView"
             style="@style/BundleSubText"
             android:text="Days Left"
-            app:layout_constraintBottom_toTopOf="@+id/dummyRateParagraphTextView"
+            app:layout_constraintBottom_toTopOf="@+id/dummyDaysLeftParagraphTextView"
             app:layout_constraintEnd_toStartOf="@+id/dummyReturnDateSubTextView"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -148,7 +147,7 @@
             app:layout_constraintTop_toBottomOf="@+id/dummyItemListTextView" />
 
         <TextView
-            android:id="@+id/dummyRateParagraphTextView"
+            android:id="@+id/dummyDaysLeftParagraphTextView"
             style="@style/CustomDefaultSmallText"
             android:text="days"
             app:layout_constraintBottom_toTopOf="@+id/horizontalBottomGuide"
@@ -172,11 +171,11 @@
             android:id="@+id/dummyReturnDateParagraphTextView"
             style="@style/CustomDefaultSmallText"
             android:text="return date"
-            app:layout_constraintBottom_toBottomOf="@+id/dummyRateParagraphTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/dummyDaysLeftParagraphTextView"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/dummyReturnDateSubTextView"
-            app:layout_constraintTop_toTopOf="@+id/dummyRateParagraphTextView" />
+            app:layout_constraintTop_toTopOf="@+id/dummyDaysLeftParagraphTextView" />
 
         <ImageButton
             android:id="@+id/editBtn"
@@ -185,23 +184,11 @@
             android:background="@android:color/white"
             android:src="@drawable/ic_edit_primary_color_24dp"
             app:layout_constraintBottom_toBottomOf="@+id/dummyReturnDateParagraphTextView"
-            app:layout_constraintEnd_toStartOf="@+id/packageMsgBtn"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/packageDeleteBtn"
             app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toEndOf="@+id/dummyReturnDateParagraphTextView"
+            app:layout_constraintStart_toEndOf="@+id/dummyReturnDateSubTextView"
             app:layout_constraintTop_toTopOf="@+id/dummyReturnDateParagraphTextView" />
 
-        <ImageButton
-            android:id="@+id/packageMsgBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:src="@drawable/ic_message_primary_color_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/editBtn"
-            app:layout_constraintEnd_toStartOf="@+id/packageDeleteBtn"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/editBtn"
-            app:layout_constraintTop_toTopOf="@+id/editBtn" />
 
         <ImageButton
             android:id="@+id/packageDeleteBtn"
@@ -209,10 +196,11 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:src="@drawable/ic_delete_primary_color_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/packageMsgBtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/packageMsgBtn"
-            app:layout_constraintTop_toTopOf="@+id/packageMsgBtn" />
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintStart_toEndOf="@+id/editBtn"
+            app:layout_constraintTop_toTopOf="@+id/editBtn"
+            app:layout_constraintBottom_toBottomOf="@+id/editBtn"/>
+
 
         <!--This xml is required for firestore core functionality. Do not alter or edit-->
         <TextView

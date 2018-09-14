@@ -13,8 +13,22 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.jordanmadrigal.lendsum.Model.Package;
+import com.jordanmadrigal.lendsum.Model.User;
 import com.jordanmadrigal.lendsum.R;
+
+import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
 public class BorrowPackageAdapter extends FirestoreRecyclerAdapter<Package, BorrowPackageAdapter.PackageViewHolder> {
 
@@ -24,7 +38,8 @@ public class BorrowPackageAdapter extends FirestoreRecyclerAdapter<Package, Borr
 
     @Override
     protected void onBindViewHolder(@NonNull PackageViewHolder holder, int position, @NonNull Package model) {
-        holder.mUserNameText.setText(model.getBorrowerName());
+
+        holder.mUserNameText.setText(model.getLenderName());
         holder.mPackageHeaderText.setText(model.getPackageName());
         holder.mItemListText.setText(model.getItemList());
         holder.mRateParaText.setText(model.getPackageRate());
@@ -51,7 +66,7 @@ public class BorrowPackageAdapter extends FirestoreRecyclerAdapter<Package, Borr
         private int minHeight;
         private CardView mCardView;
         private TextView mPackageHeaderText, mItemListText, mRateParaText, mReturnDateParaText, mItemsSubtext, mRateSubtext, mReturnDateSubtext, mUserNameText, mBorrowingFromText;
-        private ImageButton mExpandBtn, mMsgBtn, mEditBtn, mDeleteBtn;
+        private ImageButton mExpandBtn, mEditBtn, mDeleteBtn;
 
 
         public PackageViewHolder(View itemView) {
@@ -66,20 +81,16 @@ public class BorrowPackageAdapter extends FirestoreRecyclerAdapter<Package, Borr
             mExpandBtn = itemView.findViewById(R.id.packageExpandBtn);
             mPackageHeaderText = itemView.findViewById(R.id.dummyBundleTitleTextView);
             mItemListText = itemView.findViewById(R.id.dummyItemListTextView);
-            mRateParaText = itemView.findViewById(R.id.dummyRateParagraphTextView);
+            mRateParaText = itemView.findViewById(R.id.dummyDaysLeftParagraphTextView);
             mReturnDateParaText = itemView.findViewById(R.id.dummyReturnDateParagraphTextView);
-            mMsgBtn = itemView.findViewById(R.id.packageMsgBtn);
             mEditBtn = itemView.findViewById(R.id.editBtn);
             mDeleteBtn = itemView.findViewById(R.id.packageDeleteBtn);
 
-            mMsgBtn.setVisibility(View.GONE);
             mEditBtn.setVisibility(View.GONE);
             mDeleteBtn.setVisibility(View.GONE);
-            mBorrowingFromText.setText("Borrowing from");
+            mBorrowingFromText.setText("Borrowing from ");
 
             hideViews();
-
-            //collapse and expand functionality and animation
 
             //Assign min height to cardView
             final int height = 600;
@@ -119,6 +130,7 @@ public class BorrowPackageAdapter extends FirestoreRecyclerAdapter<Package, Borr
             }
         }
 
+        //collapse and expand functionality and animation
         private void collapseView() {
 
             ValueAnimator animator = ValueAnimator.ofInt(mCardView.getMeasuredHeightAndState(), minHeight);
@@ -176,4 +188,5 @@ public class BorrowPackageAdapter extends FirestoreRecyclerAdapter<Package, Borr
 
 
     }
+
 }

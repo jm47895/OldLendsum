@@ -154,15 +154,4 @@ public class CreateProfileActivity extends AppCompatActivity {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 
-    //Get the initials of of username for uID (unitTested)
-    /*public String getUserInitials(String fName, String lName){
-
-        String  fInitial = fName.substring(0, 1).toUpperCase();
-        String lInitial = lName.substring(0,1).toUpperCase();
-
-
-        return fInitial+lInitial;
-    }*/
-
-
 }

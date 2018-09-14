@@ -2,14 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navFriendSearch"
-            android:icon="@drawable/ic_search_24dp"
-            android:title="@string/search_for_friends" />
-        <item
-            android:id="@+id/navManagePayment"
-            android:icon="@drawable/ic_payment_24dp"
-            android:title="@string/manage_payment_methods" />
-        <item
             android:id="@+id/navSettings"
             android:icon="@drawable/ic_settings_24dp"
             android:title="@string/settings" />

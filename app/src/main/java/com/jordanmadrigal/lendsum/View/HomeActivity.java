@@ -1,5 +1,6 @@
 package com.jordanmadrigal.lendsum.View;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -27,14 +28,17 @@ import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.User;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.Utility.CustomViewPager;
+import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
+import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
 public class HomeActivity extends AppCompatActivity implements OnActivityToFragmentListener {
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
 
+    private DataViewModel mDataModel;
     private ActionBar mActionBar;
     private TextView mNavProfText;
     private FloatingActionButton mFAB;
@@ -53,6 +57,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        mDataModel = ViewModelProviders.of(this).get(DataViewModel.class);
         mFragmentManager = getSupportFragmentManager();
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -206,7 +211,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     }
 
     public void getFirestoreNameDisplay(){
-        DocumentReference document = database.collection("users").document(mUser.getUid());
+        DocumentReference document = database.collection(USER_COLLECTION).document(mUser.getUid());
 
         document.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -220,6 +225,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
                     String lastName = user.getLastName();
                     String fullName = firstName + " " + lastName;
 
+                    mDataModel.setSelectedLenderName(firstName);
                     mNavProfText.setText(fullName);
 
                 }
@@ -233,14 +239,6 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         Intent intent;
 
         switch (id) {
-            case R.id.navFriendSearch:
-                intent = new Intent(HomeActivity.this, FriendSearchActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.navManagePayment:
-                intent = new Intent(HomeActivity.this, ManagePaymentActivity.class);
-                startActivity(intent);
-                break;
             case R.id.navSettings:
                 intent = new Intent(HomeActivity.this, SettingsActivity.class);
                 startActivity(intent);
