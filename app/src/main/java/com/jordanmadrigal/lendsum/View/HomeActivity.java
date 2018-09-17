@@ -119,9 +119,11 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
 
                                 mViewPager.setSwipeEnabled(false);
 
-                                fragment = new AddPackageFragment();
+                                fragment = new ImageFragment();
 
-                                mFragmentManager.beginTransaction().add(R.id.contentFrame,fragment).addToBackStack("HomeFrag").commit();
+                                mFragmentManager.beginTransaction()
+                                        .add(R.id.contentFrame,fragment)
+                                        .addToBackStack("homeFrag").commit();
 
                             }
 
@@ -140,7 +142,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
 
                                 fragment = new NewMessageFragment();
 
-                                mFragmentManager.beginTransaction().add(R.id.contentFrame,fragment).addToBackStack(null).commit();
+                                mFragmentManager.beginTransaction().add(R.id.contentFrame,fragment).addToBackStack("homeFrag").commit();
 
                             }
                         });
@@ -170,6 +172,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     public void onBackPressed() {
         super.onBackPressed();
         mActionBar.setTitle(R.string.app_name);
+        mViewPager.setSwipeEnabled(true);
         mFAB.show();
     }
 
@@ -262,12 +265,12 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     }
 
     @Override
-    public void onActionBarListener(int title) {
+    public void setActionBarListener(int title) {
         getSupportActionBar().setTitle(title);
     }
 
     @Override
-    public void onFragmentVisible(boolean isVisible) {
+    public void setFragmentVisible(boolean isVisible) {
         if(!isVisible){
             mViewPager.setSwipeEnabled(true);
             mFAB.show();

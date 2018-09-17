@@ -2,7 +2,7 @@ package com.jordanmadrigal.lendsum.Interfaces;
 
 public interface OnActivityToFragmentListener {
 
-    void onActionBarListener(int title);
+    void setActionBarListener(int title);
 
-    void onFragmentVisible(boolean isVisible);
+    void setFragmentVisible(boolean isVisible);
 }

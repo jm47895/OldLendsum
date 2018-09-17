@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,19 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.Package;
-import com.jordanmadrigal.lendsum.Model.User;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
@@ -53,11 +51,11 @@ public class AddPackageFragment extends Fragment{
     private DataViewModel mDataModel;
     private TextView mReturnDateTextView;
     private EditText mPackHeaderText, mItemList, mBorrowerEmail, mBorrowerName;
-    private Button mAddPackBtn;
+    private Button mAddPackBtn, mBackButton;
     private Switch mIndefSwitch;
-    private ImageButton mDatePickerBtn, mCloseBtn;
+    private ImageButton mDatePickerBtn;
     private boolean isIndefinite;
-    private OnActivityToFragmentListener mActionBarListener, mFragmentVisibilityListener;
+    private OnActivityToFragmentListener mOnFragmentStateChange;
 
     public AddPackageFragment() {
         // Required empty public constructor
@@ -86,23 +84,21 @@ public class AddPackageFragment extends Fragment{
         isIndefinite = false;
         mDatabase = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        mCloseBtn = view.findViewById(R.id.createPackCloseBtn);
         mPackHeaderText = view.findViewById(R.id.createPackName);
         mBorrowerName= view.findViewById(R.id.createPackUserName);
         mBorrowerEmail = view.findViewById(R.id.createPackBorrowerEmail);
         mItemList = view.findViewById(R.id.createPackItemList);
+        mBackButton = view.findViewById(R.id.createPackBackBtn);
         mAddPackBtn = view.findViewById(R.id.createPackBtn);
         mReturnDateTextView = view.findViewById(R.id.createPackReturnDateTextView);
         mDatePickerBtn = view.findViewById(R.id.datePickerBtn);
         mIndefSwitch = view.findViewById(R.id.createPackIndefSwitch);
 
-        mCloseBtn.setOnClickListener(new View.OnClickListener() {
+        mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFragmentVisibilityListener.onFragmentVisible(false);
-                mActionBarListener.onActionBarListener(R.string.app_name);
+                getParentFragment().getChildFragmentManager().popBackStack("imageFrag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 hideKeyboard();
-                getFragmentManager().popBackStack();
             }
         });
 
@@ -128,7 +124,7 @@ public class AddPackageFragment extends Fragment{
                 Fragment calendarFragment = new CalendarFragment();
                 getChildFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.addPackageContainer, calendarFragment).addToBackStack("AddPackFrag").commit();
+                        .add(R.id.addPackageContainer, calendarFragment).addToBackStack("addPackFrag").commit();
             }
         });
 
@@ -180,8 +176,7 @@ public class AddPackageFragment extends Fragment{
         super.onAttach(context);
 
         try{
-            mFragmentVisibilityListener = (OnActivityToFragmentListener) context;
-            mActionBarListener = (OnActivityToFragmentListener) context;
+            mOnFragmentStateChange = (OnActivityToFragmentListener) context;
         }catch (ClassCastException e){
             throw new ClassCastException(context.toString() + "must implement OnFragmentInteraction Listener");
         }
@@ -207,13 +202,15 @@ public class AddPackageFragment extends Fragment{
                     for(QueryDocumentSnapshot document : task.getResult()){
                         if(document.exists()) {
                             isValidUser = true;
-                            mActionBarListener.onActionBarListener(R.string.app_name);
                             borrowerId = document.getReference().getId();
                             packRef.set(userPackage);
                             mDatabase.collection(USER_COLLECTION).document(borrowerId).collection(BORROW_PACKAGE_COLLECTION).document(packId).set(userPackage);
-                            getFragmentManager().popBackStack();
                             Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
-                            mFragmentVisibilityListener.onFragmentVisible(false);
+                            mOnFragmentStateChange.setActionBarListener(R.string.app_name);
+                            mOnFragmentStateChange.setFragmentVisible(false);
+                            hideKeyboard();
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            fragmentManager.popBackStack("homeFrag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             hideKeyboard();
                         }else{
                             isValidUser = false;
@@ -242,8 +239,7 @@ public class AddPackageFragment extends Fragment{
     @Override
     public void onDetach() {
         super.onDetach();
-        mActionBarListener = null;
-        mFragmentVisibilityListener = null;
+        mOnFragmentStateChange = null;
     }
 
 
