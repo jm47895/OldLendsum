@@ -3,12 +3,14 @@ package com.jordanmadrigal.lendsum.View;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,10 +33,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.UUID;
+
 import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
@@ -46,6 +57,7 @@ public class AddPackageFragment extends Fragment{
 
     private static final String LOG_TAG = AddPackageFragment.class.getSimpleName();
 
+    private FirebaseStorage mStorage = FirebaseStorage.getInstance();
     private FirebaseFirestore mDatabase;
     private FirebaseUser mUser;
     private DataViewModel mDataModel;
@@ -204,11 +216,11 @@ public class AddPackageFragment extends Fragment{
                             isValidUser = true;
                             borrowerId = document.getReference().getId();
                             packRef.set(userPackage);
+                            pushImageBitmapsToStorage(uId, packId);
                             mDatabase.collection(USER_COLLECTION).document(borrowerId).collection(BORROW_PACKAGE_COLLECTION).document(packId).set(userPackage);
                             Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
                             mOnFragmentStateChange.setActionBarListener(R.string.app_name);
                             mOnFragmentStateChange.setFragmentVisible(false);
-                            hideKeyboard();
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                             fragmentManager.popBackStack("homeFrag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             hideKeyboard();
@@ -228,6 +240,37 @@ public class AddPackageFragment extends Fragment{
         });
 
 
+    }
+
+    private void pushImageBitmapsToStorage(String uId, String packId){
+        List<Bitmap> imageBitmaps = mDataModel.getSelectedImageArray().getValue();
+
+        String path = "lendsum/users/" + uId + "/" + packId + "/" + UUID.randomUUID() + ".jpg";
+        StorageReference imageStorageRef = mStorage.getReference(path);
+
+        for(Bitmap bitmap : imageBitmaps){
+
+            if(imageBitmaps.size() > 0){
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] data = baos.toByteArray();
+
+                UploadTask uploadTask = imageStorageRef.putBytes(data);
+
+                uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Problem Uploading Images", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                });
+            }
+        }
     }
 
     public void hideKeyboard(){

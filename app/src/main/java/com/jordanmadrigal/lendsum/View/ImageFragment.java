@@ -1,6 +1,7 @@
 package com.jordanmadrigal.lendsum.View;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.jordanmadrigal.lendsum.Adapter.ImageAdapter;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.R;
+import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,12 +57,19 @@ public class ImageFragment extends Fragment {
     private ImageButton mAddImageBtn, mCloseImageBtn;
     private List<Bitmap> mImageBitmaps;
     private OnActivityToFragmentListener mOnFragmentStateChange;
+    private DataViewModel mDataModel;
 
 
     public ImageFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mDataModel = ViewModelProviders.of(getActivity()).get(DataViewModel.class);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,6 +104,10 @@ public class ImageFragment extends Fragment {
         mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //share images with AddPackFrag
+                mDataModel.setSelectedImageArray(mImageBitmaps);
+
                 Fragment addPackageFragment = new AddPackageFragment();
                 getChildFragmentManager()
                         .beginTransaction()
