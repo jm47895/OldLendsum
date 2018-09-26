@@ -42,6 +42,7 @@ import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,6 +68,7 @@ public class AddPackageFragment extends Fragment{
     private Switch mIndefSwitch;
     private ImageButton mDatePickerBtn;
     private boolean isIndefinite;
+    private List<String> mImagePaths;
     private OnActivityToFragmentListener mOnFragmentStateChange;
 
     public AddPackageFragment() {
@@ -201,7 +203,6 @@ public class AddPackageFragment extends Fragment{
         DocumentReference packRef = mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION).document();
         String packId = packRef.getId();
         String lenderName = mDataModel.getSelectedLenderName().getValue();
-        Package userPackage = new Package(lenderName, borrowerName, borrowerEmail, packId, packName, itemList, indefinite, date);
 
         //Add to borrower collection with same packUid
         CollectionReference borrowerRef = mDatabase.collection(USER_COLLECTION);
@@ -215,9 +216,15 @@ public class AddPackageFragment extends Fragment{
                         if(document.exists()) {
                             isValidUser = true;
                             borrowerId = document.getReference().getId();
+                            pushImageBitmapsToFirebaseStorage(uId, packId);
+
+                            //Package added for lender
+                            Package userPackage = new Package(lenderName, borrowerName, borrowerEmail, packId, packName, itemList, indefinite, date, mImagePaths);
                             packRef.set(userPackage);
-                            pushImageBitmapsToStorage(uId, packId);
+
+                            //package added for borrower
                             mDatabase.collection(USER_COLLECTION).document(borrowerId).collection(BORROW_PACKAGE_COLLECTION).document(packId).set(userPackage);
+
                             Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
                             mOnFragmentStateChange.setActionBarListener(R.string.app_name);
                             mOnFragmentStateChange.setFragmentVisible(false);
@@ -242,19 +249,26 @@ public class AddPackageFragment extends Fragment{
 
     }
 
-    private void pushImageBitmapsToStorage(String uId, String packId){
+    private void pushImageBitmapsToFirebaseStorage(String uId, String packId){
         List<Bitmap> imageBitmaps = mDataModel.getSelectedImageArray().getValue();
 
-        String path = "lendsum/users/" + uId + "/" + packId + "/" + UUID.randomUUID() + ".jpg";
-        StorageReference imageStorageRef = mStorage.getReference(path);
+        mImagePaths = new ArrayList<>();
 
-        for(Bitmap bitmap : imageBitmaps){
+        if(imageBitmaps.size() > 0) {
 
-            if(imageBitmaps.size() > 0){
+            for (Bitmap bitmap : imageBitmaps) {
+
+                //Create paths for all images
+                String path = "lendsum/users/" + uId + "/" + packId + "/" + UUID.randomUUID() + ".jpg";
+
+                StorageReference imageStorageRef = mStorage.getReference(path);
+
+                //Turn image to byte image
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
 
+                //Upload to Firebase Storage
                 UploadTask uploadTask = imageStorageRef.putBytes(data);
 
                 uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -269,9 +283,14 @@ public class AddPackageFragment extends Fragment{
                         Log.d(LOG_TAG, e.getMessage());
                     }
                 });
+
+                //Add image paths to arraylist for firestore
+                mImagePaths.add(path);
+
             }
         }
     }
+
 
     public void hideKeyboard(){
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

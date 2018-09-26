@@ -1,10 +1,13 @@
 package com.jordanmadrigal.lendsum.Model;
 
+import java.util.List;
+
 public class Package {
 
     private String packageName;
     private String packId;
     private String itemList;
+    private List<String> imagePaths;
     private float itemPrice;
     private String itemDescription;
     private boolean indefinite;
@@ -20,7 +23,7 @@ public class Package {
     public Package() {
     }
 
-    public Package(String lenderName, String borrowerName, String borrowerEmail, String packId, String packageName, String itemList, boolean indefinite, String returnDate) {
+    public Package(String lenderName, String borrowerName, String borrowerEmail, String packId, String packageName, String itemList, boolean indefinite, String returnDate, List<String> imagePaths) {
         this.lenderName = lenderName;
         this.borrowerName = borrowerName;
         this.borrowerEmail = borrowerEmail;
@@ -29,6 +32,7 @@ public class Package {
         this.itemList = itemList;
         this.indefinite = indefinite;
         this.returnDate = returnDate;
+        this.imagePaths = imagePaths;
     }
 
 
@@ -102,5 +106,13 @@ public class Package {
 
     public void setIndefinite(boolean indefinite) {
         this.indefinite = indefinite;
+    }
+
+    public List<String> getImagePaths() {
+        return imagePaths;
+    }
+
+    public void setImagePaths(List<String> imagePaths) {
+        this.imagePaths = imagePaths;
     }
 }
