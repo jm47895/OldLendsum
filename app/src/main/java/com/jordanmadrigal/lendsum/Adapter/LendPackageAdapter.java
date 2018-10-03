@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -22,6 +23,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,6 +33,8 @@ import com.google.firebase.storage.StorageReference;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
 
+import java.util.List;
+
 import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.LEND_PACKAGE_COLLECTION;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
@@ -37,6 +42,7 @@ import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPackageAdapter.PackageViewHolder> {
 
     private Context context;
+    FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
     private static final String LOG_TAG = LendPackageAdapter.class.getSimpleName();
 
     public LendPackageAdapter(@NonNull FirestoreRecyclerOptions<Package> options, Context context) {
@@ -218,28 +224,30 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
 
     private void deleteDataFromFirestore(String packageHeader, String borrowEmail){
 
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         String uId = mUser.getUid();
 
         //Delete lender package from firestore
-        CollectionReference lenderPackRef = database.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION);
+        CollectionReference lenderPackRef = mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION);
         lenderPackRef.whereEqualTo("packageName", packageHeader).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
 
+                    Package userPackage = document.toObject(Package.class);
+
+                    //delete back end storage photo files
+                    deleteImagesFromFirebaseStorage(userPackage);
+
                     document.getReference().delete();
 
-                    String packId = document.getReference().getId();
 
-                    //deleteImagesFromFirebaseStorage(uId, packId);
                 }
             }
         });
 
-        //Delete borrower from firestore
-        CollectionReference userColRef = database.collection(USER_COLLECTION);
+        //Delete borrower package from firestore
+        CollectionReference userColRef = mDatabase.collection(USER_COLLECTION);
         userColRef.whereEqualTo("email", borrowEmail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 
             String borrowerUId = "";
@@ -248,7 +256,7 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
                 for (QueryDocumentSnapshot userDocument : task.getResult()) {
                     borrowerUId = userDocument.getReference().getId();
                 }
-                CollectionReference borrowPackRef = database.collection(USER_COLLECTION).document(borrowerUId).collection(BORROW_PACKAGE_COLLECTION);
+                CollectionReference borrowPackRef = mDatabase.collection(USER_COLLECTION).document(borrowerUId).collection(BORROW_PACKAGE_COLLECTION);
                 borrowPackRef.whereEqualTo("packageName", packageHeader).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -263,24 +271,17 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
 
     }
 
-    private void deleteImagesFromFirebaseStorage(String uId, String packId){
+    private void deleteImagesFromFirebaseStorage(Package userPackage){
 
-        FirebaseStorage mStorage = FirebaseStorage.getInstance();
+        List<String> imagePaths = userPackage.getImagePaths();
 
-        String path = "lendsum/users/" + uId + "/" + packId + "/";
-        StorageReference imagesRef = mStorage.getReference();
-        StorageReference packImageDirRef = imagesRef.child(path);
+        for (String path : imagePaths){
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference imagesRef = storage.getReference(path);
 
-        packImageDirRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(LOG_TAG, "Images deleted from Firebase Storage");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(LOG_TAG, "Image deletion failed");
-            }
-        });
+            imagesRef.delete();
+        }
+
+
     }
 }

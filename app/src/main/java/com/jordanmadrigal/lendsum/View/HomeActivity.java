@@ -34,7 +34,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
-public class HomeActivity extends AppCompatActivity implements OnActivityToFragmentListener {
+public class HomeActivity extends AppCompatActivity implements OnActivityToFragmentListener{
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
 
@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
 
         mDataModel = ViewModelProviders.of(this).get(DataViewModel.class);
         mFragmentManager = getSupportFragmentManager();
@@ -88,6 +89,20 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         }
 
         mFAB = findViewById(R.id.mainFab);
+        mFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new ImageFragment();
+
+                mActionBar.setTitle("New Package");
+
+                mFAB.hide();
+
+                mFragmentManager.beginTransaction()
+                        .add(R.id.contentFrame,fragment)
+                        .addToBackStack("homeFrag").commit();
+            }
+        });
 
         mViewPager.addOnPageChangeListener(new CustomViewPager.OnPageChangeListener() {
 

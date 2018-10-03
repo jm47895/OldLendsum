@@ -26,6 +26,7 @@
 
         <com.jordanmadrigal.lendsum.Utility.CustomViewPager
             android:id="@+id/viewPager"
+            android:background="@color/darkBrown"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
@@ -38,6 +39,8 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/mainFab"
             app:fabCustomSize="54dp"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/ic_handshake_white_54dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

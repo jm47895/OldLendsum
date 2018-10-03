@@ -1,6 +1,7 @@
 package com.jordanmadrigal.lendsum.View;
 
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,10 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,8 +46,11 @@ import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import static com.jordanmadrigal.lendsum.Utility.Constants.BORROW_PACKAGE_COLLECTION;
@@ -62,12 +69,15 @@ public class AddPackageFragment extends Fragment{
     private FirebaseFirestore mDatabase;
     private FirebaseUser mUser;
     private DataViewModel mDataModel;
-    private TextView mReturnDateTextView;
-    private EditText mPackHeaderText, mItemList, mBorrowerEmail, mBorrowerName;
+    private TextView mStartDateText, mReturnDateText, mReturnDateTextValue, mRateText, mDollarSignText,
+            mPerText, mLendPeriodText, mForText, mLendPeriodTextValue, mStartDateTextValue;
+    private Spinner mLendPeriodSpinner;
+    private EditText mPackHeaderText, mItemList, mBorrowerEmail, mBorrowerName, mRateValue, mCalPeriodValue;
     private Button mAddPackBtn, mBackButton;
     private Switch mIndefSwitch;
     private ImageButton mDatePickerBtn;
-    private boolean isIndefinite;
+    private boolean isIndefinite, isDateSet;
+    private String mStartDate, mReturnDate;
     private List<String> mImagePaths;
     private OnActivityToFragmentListener mOnFragmentStateChange;
 
@@ -95,7 +105,8 @@ public class AddPackageFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        isIndefinite = false;
+        isDateSet = false;
+        isIndefinite = false;   //needed for package constructor
         mDatabase = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         mPackHeaderText = view.findViewById(R.id.createPackName);
@@ -104,9 +115,20 @@ public class AddPackageFragment extends Fragment{
         mItemList = view.findViewById(R.id.createPackItemList);
         mBackButton = view.findViewById(R.id.createPackBackBtn);
         mAddPackBtn = view.findViewById(R.id.createPackBtn);
-        mReturnDateTextView = view.findViewById(R.id.createPackReturnDateTextView);
+        mStartDateText = view.findViewById(R.id.createPackStartDateTextView);
+        mStartDateTextValue = view.findViewById(R.id.createPackStartDateValueTextview);
+        mRateText = view.findViewById(R.id.createPackLendRateText);
+        mLendPeriodSpinner = view.findViewById(R.id.createPackLendPeriodSpinner);
+        mReturnDateText = view.findViewById(R.id.createPackReturnDateTextView);
+        mReturnDateTextValue = view.findViewById(R.id.createPackReturnValueTextView);
         mDatePickerBtn = view.findViewById(R.id.datePickerBtn);
         mIndefSwitch = view.findViewById(R.id.createPackIndefSwitch);
+        mDollarSignText = view.findViewById(R.id.createPackDollarSignTextView);
+        mRateValue = view.findViewById(R.id.createPackDollarEditText);
+        mPerText = view.findViewById(R.id.createPackPerTextView);
+        mLendPeriodText = view.findViewById(R.id.createPackLendPeriodTextView);
+        mCalPeriodValue = view.findViewById(R.id.createPackLendPeriodEditText);
+        mLendPeriodTextValue = view.findViewById(R.id.createPackRatePeriodValueTextView);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +142,10 @@ public class AddPackageFragment extends Fragment{
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked){
-                    mDatePickerBtn.setVisibility(View.INVISIBLE);
-                    mReturnDateTextView.setVisibility(View.INVISIBLE);
+                    hideViews();
                     isIndefinite = true;
                 }else{
-                    mDatePickerBtn.setVisibility(View.VISIBLE);
-                    mReturnDateTextView.setVisibility(View.VISIBLE);
+                    showViews();
                     isIndefinite = false;
                 }
             }
@@ -143,38 +163,97 @@ public class AddPackageFragment extends Fragment{
         });
 
 
+
+        //initialize spinner, spinner adapter, handle spinner cases
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.lend_period_choices, R.layout.support_simple_spinner_dropdown_item);
+        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        mLendPeriodSpinner.setAdapter(spinnerAdapter);
+        mLendPeriodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            Calendar returnDate;
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+
+                mDataModel.getSelectedStartDate().observe(getActivity(), new Observer<String>() {
+                    @Override
+                    public void onChanged(@Nullable String date) {
+                        mStartDateTextValue.setText(date);
+                        isDateSet = true;
+                    }
+                });
+
+                if(!TextUtils.isEmpty(mCalPeriodValue.getText()) && !mIndefSwitch.isChecked() && isDateSet) {
+
+                    int numOfPeriod = Integer.parseInt(mCalPeriodValue.getText().toString().trim());
+                    returnDate = mDataModel.getSelectedReturnDate().getValue();
+
+                    switch (position) {
+                        case 1:
+                            returnDate.add(Calendar.DAY_OF_MONTH, numOfPeriod);  //Used to calculate return date in calendar fragment
+                            mLendPeriodTextValue.setText(R.string.days);
+                            break;
+                        case 2:
+                            returnDate.add(Calendar.WEEK_OF_YEAR, numOfPeriod);
+                            mLendPeriodTextValue.setText(R.string.weeks);
+                            break;
+                        case 3:
+                            returnDate.add(Calendar.MONTH, numOfPeriod);
+                            mLendPeriodTextValue.setText(R.string.months);
+                            break;
+                    }
+
+                    SimpleDateFormat formatEndDate = new SimpleDateFormat("MMM-dd-YY", Locale.getDefault());
+                    mReturnDate = formatEndDate.format(returnDate.getTime());
+                    mReturnDateTextValue.setText(mReturnDate);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         mAddPackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String blankBorrowerName = "Borrower name cannot be left blank";
-                String blankBorrowerEmailErr = "Borrower email cannot be left blank";
-                String blankPackTextErr = "Package name cannot be left blank";
-                String blankItemListErr = "Item List cannot be left blank";
-
+                String blankFieldErr = "This field is empty";
+                String spinnerNotSetErr = "You must pick a time period";
+                String calendarNotSetErr = "You must pick a date if not lending indefinitely";
 
                 String borrowerName = mBorrowerName.getText().toString().trim();
                 String borrowerEmail = mBorrowerEmail.getText().toString().trim().toLowerCase();
                 String packName = mPackHeaderText.getText().toString().trim();
                 String itemList = mItemList.getText().toString().trim();
-                String date = mDataModel.getSelectedDate().getValue();
+                String rate = mRateValue.getText().toString().trim();
+                String lendPeriod = mCalPeriodValue.getText().toString().trim();
+
                 boolean indefinite = isIndefinite;
 
                 if(mIndefSwitch.isChecked()){
-                    date = null;
+                    mStartDate = null;
+                    mReturnDate = null;
                 }
 
-                if(TextUtils.isEmpty(borrowerName)){
-                    mBorrowerName.setError(blankBorrowerName);
-                }else if(TextUtils.isEmpty(borrowerEmail)){
-                    mBorrowerEmail.setError(blankBorrowerEmailErr);
-                }else if(TextUtils.isEmpty(packName)){
-                    mPackHeaderText.setError(blankPackTextErr);
-                }else if(TextUtils.isEmpty(itemList)){
-                    mItemList.setError(blankItemListErr);
+                if(TextUtils.isEmpty(borrowerName) || TextUtils.isEmpty(borrowerEmail) || TextUtils.isEmpty(packName)
+                        || TextUtils.isEmpty(itemList)){
+
+                    mBorrowerName.setError(blankFieldErr);
+                    mBorrowerEmail.setError(blankFieldErr);
+                    mPackHeaderText.setError(blankFieldErr);
+                    mItemList.setError(blankFieldErr);
+
+                    //TODO Fix validation logic
+                /*}else if(!mIndefSwitch.isChecked()){
+                    if(TextUtils.isEmpty(rate) || TextUtils.isEmpty(lendPeriod)) {
+                        mRateValue.setError(blankFieldErr);
+                        mCalPeriodValue.setError(blankFieldErr);
+                    }*/
                 }else{
                     String uId = mUser.getUid();
 
-                    writePackageToFirestore(uId,borrowerName, borrowerEmail, packName, itemList, indefinite, date);
+                    writePackageToFirestore(uId,borrowerName, borrowerEmail, packName, itemList, indefinite, mReturnDate);
 
                 }
 
@@ -185,11 +264,14 @@ public class AddPackageFragment extends Fragment{
 
     }
 
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
         try{
+
             mOnFragmentStateChange = (OnActivityToFragmentListener) context;
         }catch (ClassCastException e){
             throw new ClassCastException(context.toString() + "must implement OnFragmentInteraction Listener");
@@ -291,6 +373,45 @@ public class AddPackageFragment extends Fragment{
         }
     }
 
+    private void hideSpecificView(View v){
+        v.setVisibility(View.INVISIBLE);
+    }
+
+    private void showSpecificView(View v){
+        v.setVisibility(View.VISIBLE);
+    }
+
+    private void hideViews() {
+        mDatePickerBtn.setVisibility(View.INVISIBLE);
+        mStartDateText.setVisibility(View.INVISIBLE);
+        mReturnDateText.setVisibility(View.INVISIBLE);
+        mReturnDateTextValue.setVisibility(View.INVISIBLE);
+        mLendPeriodSpinner.setVisibility(View.INVISIBLE);
+        mRateText.setVisibility(View.INVISIBLE);
+        mReturnDateTextValue.setVisibility(View.INVISIBLE);
+        mDollarSignText.setVisibility(View.INVISIBLE);
+        mRateValue.setVisibility(View.INVISIBLE);
+        mPerText.setVisibility(View.INVISIBLE);
+        mLendPeriodText.setVisibility(View.INVISIBLE);
+        mCalPeriodValue.setVisibility(View.INVISIBLE);
+        mLendPeriodTextValue.setVisibility(View.INVISIBLE);
+    }
+
+    public void showViews(){
+        mDatePickerBtn.setVisibility(View.VISIBLE);
+        mStartDateText.setVisibility(View.VISIBLE);
+        mReturnDateText.setVisibility(View.VISIBLE);
+        mReturnDateTextValue.setVisibility(View.VISIBLE);
+        mLendPeriodSpinner.setVisibility(View.VISIBLE);
+        mRateText.setVisibility(View.VISIBLE);
+        mReturnDateTextValue.setVisibility(View.VISIBLE);
+        mDollarSignText.setVisibility(View.VISIBLE);
+        mRateValue.setVisibility(View.VISIBLE);
+        mPerText.setVisibility(View.VISIBLE);
+        mLendPeriodText.setVisibility(View.VISIBLE);
+        mCalPeriodValue.setVisibility(View.VISIBLE);
+        mLendPeriodTextValue.setVisibility(View.VISIBLE);
+    }
 
     public void hideKeyboard(){
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -303,6 +424,5 @@ public class AddPackageFragment extends Fragment{
         super.onDetach();
         mOnFragmentStateChange = null;
     }
-
 
 }

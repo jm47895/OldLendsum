@@ -30,11 +30,12 @@ import java.util.Locale;
 public class CalendarFragment extends Fragment {
 
     private static final String LOG_TAG = CalendarFragment.class.getSimpleName();
-    private DataViewModel model;
+    private DataViewModel mDataModel;
     private ImageButton mCancelBtn;
     private Button mAddDateBtn;
     private DatePicker mDatePicker;
-    private String date;
+    private String mStartDate;
+    private Calendar mReturnDate;
 
 
 
@@ -60,27 +61,32 @@ public class CalendarFragment extends Fragment {
         mCancelBtn = view.findViewById(R.id.addDateCancelBtn);
         mAddDateBtn = view.findViewById(R.id.addDateBtn);
         mDatePicker = view.findViewById(R.id.calendar);
-        model = ViewModelProviders.of(getActivity()).get(DataViewModel.class);
+        mDataModel = ViewModelProviders.of(getActivity()).get(DataViewModel.class);
 
         mCancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                date = null;
+                mReturnDate = null;
+                mStartDate = null;
                 getParentFragment().getChildFragmentManager().popBackStack();
             }
         });
+
 
 
         mDatePicker.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker datePicker, int year, int month, int day) {
 
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day);
+                Calendar startDate = Calendar.getInstance();
 
-                SimpleDateFormat format = new SimpleDateFormat("MMM-dd", Locale.getDefault());
-                date = format.format(calendar.getTime());
+                startDate.set(year, month, day);
 
+                SimpleDateFormat formatEndDate = new SimpleDateFormat("MMM-dd", Locale.getDefault());
+                mStartDate = formatEndDate.format(startDate.getTime());
+
+                mReturnDate = Calendar.getInstance();
+                mReturnDate.set(year, month, day);
 
             }
         });
@@ -89,12 +95,17 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                model.setSelectedDate(date);
+                mDataModel.setSelectedStartDate(mStartDate);
+                mDataModel.setSelectedReturnDate(mReturnDate);
+                mDataModel.hasDateChanged(true);
 
                 getParentFragment().getChildFragmentManager().popBackStackImmediate();
 
             }
         });
     }
+
+
+
 
 }

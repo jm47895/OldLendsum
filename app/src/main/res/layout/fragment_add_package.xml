@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="16dp" />
+            app:layout_constraintGuide_begin="4dp" />
 
         <android.support.constraint.Guideline
             android:id="@+id/horizontalEndGuide"
@@ -50,7 +50,18 @@
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalStartGuide" />
+            app:layout_constraintTop_toBottomOf="@+id/horizontalStartGuide"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <EditText
+            android:id="@+id/createPackBorrowerEmail"
+            style="@style/CustomEditText"
+            android:hint="@string/borrower_email"
+            app:layout_constraintBottom_toTopOf="@+id/createPackName"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackUserName" />
 
         <EditText
             android:id="@+id/createPackName"
@@ -62,16 +73,6 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
             app:layout_constraintTop_toBottomOf="@+id/createPackBorrowerEmail" />
-
-        <EditText
-            android:id="@+id/createPackBorrowerEmail"
-            style="@style/CustomEditText"
-            android:hint="@string/borrower_email"
-            app:layout_constraintBottom_toTopOf="@+id/createPackName"
-            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/createPackUserName" />
 
         <EditText
             android:id="@+id/createPackItemList"
@@ -86,8 +87,9 @@
         <TextView
             android:id="@+id/createPackIndefTextview"
             style="@style/CustomDefaultMediumText"
+            android:layout_height="23dp"
             android:text="@string/lend_indefinitely"
-            app:layout_constraintBottom_toTopOf="@+id/createPackReturnDateTextView"
+            app:layout_constraintBottom_toTopOf="@+id/createPackStartDateTextView"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/verticalStartGuide"
@@ -98,20 +100,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@+id/createPackIndefTextview"
-            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
             app:layout_constraintTop_toTopOf="@+id/createPackIndefTextview" />
 
         <TextView
-            android:id="@+id/createPackReturnDateTextView"
+            android:id="@+id/createPackStartDateTextView"
             style="@style/CustomDefaultMediumText"
-            android:text="@string/return_date"
-            app:layout_constraintBottom_toTopOf="@+id/createPackBackBtn"
+            android:layout_height="23dp"
+            android:text="@string/start_date"
+            app:layout_constraintBottom_toTopOf="@+id/createPackLendPeriodTextView"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/verticalStartGuide"
             app:layout_constraintTop_toBottomOf="@+id/createPackIndefTextview" />
+
+        <TextView
+            android:id="@+id/createPackStartDateValueTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/createPackStartDateTextView"
+            app:layout_constraintEnd_toStartOf="@id/datePickerBtn"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/createPackStartDateTextView"
+            app:layout_constraintTop_toTopOf="@id/createPackStartDateTextView"
+            tools:text="01/01/2000" />
 
         <ImageButton
             android:id="@+id/datePickerBtn"
@@ -119,27 +134,142 @@
             android:layout_height="wrap_content"
             android:background="@color/colorSecondaryLight"
             android:src="@drawable/ic_date_range_primary_color_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/createPackReturnDateTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/createPackStartDateTextView"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="@+id/verticalStartGuide"
-            app:layout_constraintTop_toTopOf="@+id/createPackReturnDateTextView" />
+            app:layout_constraintTop_toTopOf="@+id/createPackStartDateTextView" />
+
+        <TextView
+            android:id="@+id/createPackLendRateText"
+            style="@style/CustomDefaultMediumText"
+            android:text="@string/rate"
+            app:layout_constraintBottom_toTopOf="@+id/createPackReturnDateTextView"
+            app:layout_constraintEnd_toStartOf="@+id/createPackDollarSignTextView"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackLendPeriodTextView" />
+
+        <TextView
+            android:id="@+id/createPackDollarSignTextView"
+            style="@style/CustomDefaultSmallText"
+            android:layout_marginEnd="4dp"
+            android:text="$"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintBottom_toBottomOf="@id/createPackLendRateText"
+            app:layout_constraintStart_toEndOf="@+id/verticalStartGuide"
+            app:layout_constraintTop_toTopOf="@id/createPackLendRateText"
+            app:layout_constraintEnd_toStartOf="@id/createPackDollarEditText"/>
+
+        <EditText
+            android:id="@+id/createPackDollarEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginEnd="4dp"
+            android:hint="Amt."
+            android:inputType="number"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintBottom_toBottomOf="@id/createPackLendRateText"
+            app:layout_constraintTop_toTopOf="@id/createPackLendRateText"
+            app:layout_constraintEnd_toStartOf="@id/createPackPerTextView"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            tools:layout_editor_absoluteX="60dp" />
+
+        <TextView
+            android:id="@+id/createPackPerTextView"
+            style="@style/CustomDefaultMediumText"
+            android:text="per"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintBottom_toBottomOf="@id/createPackLendRateText"
+            app:layout_constraintEnd_toStartOf="@+id/createPackRatePeriodValueTextView"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toTopOf="@id/createPackLendRateText" />
+
+        <Spinner
+            android:id="@+id/createPackLendPeriodSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/createPackLendPeriodTextView"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toTopOf="@id/createPackLendPeriodTextView" />
+
+        <TextView
+            android:id="@+id/createPackLendPeriodTextView"
+            style="@style/CustomDefaultMediumText"
+            android:text="@string/lend_period"
+            app:layout_constraintBottom_toTopOf="@+id/createPackLendRateText"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackStartDateTextView" />
+
+        <EditText
+            android:id="@+id/createPackLendPeriodEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="No."
+            android:inputType="number"
+            app:layout_constraintBottom_toBottomOf="@id/createPackLendPeriodTextView"
+            app:layout_constraintEnd_toStartOf="@+id/createPackLendPeriodSpinner"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/createPackLendPeriodTextView"
+            app:layout_constraintTop_toTopOf="@id/createPackLendPeriodTextView" />
+
+        <TextView
+            android:id="@+id/createPackRatePeriodValueTextView"
+            style="@style/CustomDefaultMediumText"
+            app:layout_constraintBottom_toBottomOf="@id/createPackLendRateText"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toTopOf="@id/createPackLendRateText"
+            tools:text="week" />
+
+
+        <TextView
+            android:id="@+id/createPackReturnDateTextView"
+            style="@style/CustomDefaultMediumText"
+            android:text="@string/return_date"
+            app:layout_constraintBottom_toTopOf="@+id/createPackBackBtn"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/createPackLendRateText" />
+
+        <TextView
+            android:id="@+id/createPackReturnValueTextView"
+            style="@style/CustomDefaultSmallText"
+            app:layout_constraintBottom_toBottomOf="@id/createPackReturnDateTextView"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/createPackReturnDateTextView"
+            app:layout_constraintTop_toTopOf="@id/createPackReturnDateTextView"
+            tools:text="01/01/2000" />
+
 
         <Button
             android:id="@+id/createPackBtn"
             style="@style/CustomDefaultSmallButton"
             android:text="@string/create_package"
+            app:layout_constraintBottom_toBottomOf="@id/createPackBackBtn"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
             app:layout_constraintStart_toEndOf="@+id/createPackBackBtn"
-            app:layout_constraintTop_toTopOf="@+id/createPackBackBtn"
-            app:layout_constraintBottom_toBottomOf="@id/createPackBackBtn"/>
+            app:layout_constraintTop_toTopOf="@+id/createPackBackBtn" />
 
         <Button
             android:id="@+id/createPackBackBtn"
             style="@style/CustomDefaultSmallButton"
             android:text="@string/back"
-            app:layout_constraintBottom_toTopOf="@+id/horizontalEndGuide"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/createPackBtn"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
             app:layout_constraintTop_toBottomOf="@+id/createPackReturnDateTextView" />
