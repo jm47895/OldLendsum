@@ -32,6 +32,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
+import com.jordanmadrigal.lendsum.Utility.FirebaseService;
 
 import java.util.List;
 
@@ -42,7 +43,8 @@ import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPackageAdapter.PackageViewHolder> {
 
     private Context context;
-    FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
+    private FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
+    private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
     private static final String LOG_TAG = LendPackageAdapter.class.getSimpleName();
 
     public LendPackageAdapter(@NonNull FirestoreRecyclerOptions<Package> options, Context context) {
@@ -214,74 +216,12 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
                 String packHeader = holder.mPackageHeaderText.getText().toString();
                 String borrowerEmail = holder.mEmailText.getText().toString();
 
-                deleteDataFromFirestore(packHeader, borrowerEmail);
+                FirebaseService fbService = new FirebaseService(mUser, mDatabase);
+                fbService.deleteDataFromFirebase(packHeader, borrowerEmail);
 
             }
         });
 
     }
 
-
-    private void deleteDataFromFirestore(String packageHeader, String borrowEmail){
-
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-        String uId = mUser.getUid();
-
-        //Delete lender package from firestore
-        CollectionReference lenderPackRef = mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION);
-        lenderPackRef.whereEqualTo("packageName", packageHeader).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-
-                    Package userPackage = document.toObject(Package.class);
-
-                    //delete back end storage photo files
-                    deleteImagesFromFirebaseStorage(userPackage);
-
-                    document.getReference().delete();
-
-
-                }
-            }
-        });
-
-        //Delete borrower package from firestore
-        CollectionReference userColRef = mDatabase.collection(USER_COLLECTION);
-        userColRef.whereEqualTo("email", borrowEmail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-            String borrowerUId = "";
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot userDocument : task.getResult()) {
-                    borrowerUId = userDocument.getReference().getId();
-                }
-                CollectionReference borrowPackRef = mDatabase.collection(USER_COLLECTION).document(borrowerUId).collection(BORROW_PACKAGE_COLLECTION);
-                borrowPackRef.whereEqualTo("packageName", packageHeader).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (QueryDocumentSnapshot packDocument : task.getResult()) {
-                            packDocument.getReference().delete();
-                        }
-                    }
-                });
-            }
-        });
-
-
-    }
-
-    private void deleteImagesFromFirebaseStorage(Package userPackage){
-
-        List<String> imagePaths = userPackage.getImagePaths();
-
-        for (String path : imagePaths){
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference imagesRef = storage.getReference(path);
-
-            imagesRef.delete();
-        }
-
-
-    }
 }

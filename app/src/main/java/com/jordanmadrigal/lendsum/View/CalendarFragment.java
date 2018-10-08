@@ -68,7 +68,9 @@ public class CalendarFragment extends Fragment {
             public void onClick(View view) {
                 mReturnDate = null;
                 mStartDate = null;
-                getParentFragment().getChildFragmentManager().popBackStack();
+                if (getParentFragment() != null) {
+                    getParentFragment().getChildFragmentManager().popBackStack();
+                }
             }
         });
 
@@ -97,9 +99,10 @@ public class CalendarFragment extends Fragment {
 
                 mDataModel.setSelectedStartDate(mStartDate);
                 mDataModel.setSelectedReturnDate(mReturnDate);
-                mDataModel.hasDateChanged(true);
 
-                getParentFragment().getChildFragmentManager().popBackStackImmediate();
+                if (getParentFragment() != null) {
+                    getParentFragment().getChildFragmentManager().popBackStackImmediate();
+                }
 
             }
         });

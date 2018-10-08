@@ -1,8 +1,10 @@
 package com.jordanmadrigal.lendsum.View;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -17,22 +19,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jordanmadrigal.lendsum.Adapter.ViewPagerAdapter;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
-import com.jordanmadrigal.lendsum.Model.User;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.Utility.CustomViewPager;
+import com.jordanmadrigal.lendsum.Utility.FirebaseService;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
-import static com.jordanmadrigal.lendsum.Utility.Constants.USER_COLLECTION;
 
 public class HomeActivity extends AppCompatActivity implements OnActivityToFragmentListener{
 
@@ -45,7 +43,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private View mNavHeaderView;
-    private FirebaseFirestore database;
+    private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private FragmentManager mFragmentManager;
@@ -62,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         mFragmentManager = getSupportFragmentManager();
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        database = FirebaseFirestore.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
         mNavProfText = findViewById(R.id.navUserName);
 
         mDrawerLayout = findViewById(R.id.drawerLayout);
@@ -207,7 +205,15 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     protected void onStart() {
         super.onStart();
 
-        getFirestoreNameDisplay();
+        FirebaseService fbService = new FirebaseService(mUser, mDatabase, mDataModel);
+
+        fbService.getFirestoreNameDisplay();
+        mDataModel.getSelectedUserNameDisplay().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String userName) {
+                mNavProfText.setText(userName);
+            }
+        });
 
         //Drawer event handler
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -228,28 +234,6 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
 
     }
 
-    public void getFirestoreNameDisplay(){
-        DocumentReference document = database.collection(USER_COLLECTION).document(mUser.getUid());
-
-        document.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                if(documentSnapshot.exists()) {
-
-                    User user = documentSnapshot.toObject(User.class);
-
-                    String firstName = user.getFirstName();
-                    String lastName = user.getLastName();
-                    String fullName = firstName + " " + lastName;
-
-                    mDataModel.setSelectedLenderName(firstName);
-                    mNavProfText.setText(fullName);
-
-                }
-            }
-        });
-    }
 
     //Handles Navdrawer click events
     private void navigateDrawerEvents(int id){

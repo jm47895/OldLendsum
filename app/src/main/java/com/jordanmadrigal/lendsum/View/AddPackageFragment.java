@@ -43,6 +43,7 @@ import com.google.firebase.storage.UploadTask;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
 import com.jordanmadrigal.lendsum.Model.Package;
 import com.jordanmadrigal.lendsum.R;
+import com.jordanmadrigal.lendsum.Utility.FirebaseService;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import java.io.ByteArrayOutputStream;
@@ -65,12 +66,11 @@ public class AddPackageFragment extends Fragment{
 
     private static final String LOG_TAG = AddPackageFragment.class.getSimpleName();
 
-    private FirebaseStorage mStorage = FirebaseStorage.getInstance();
     private FirebaseFirestore mDatabase;
     private FirebaseUser mUser;
     private DataViewModel mDataModel;
     private TextView mStartDateText, mReturnDateText, mReturnDateTextValue, mRateText, mDollarSignText,
-            mPerText, mLendPeriodText, mForText, mLendPeriodTextValue, mStartDateTextValue;
+            mPerText, mLendPeriodText, mLendPeriodTextValue, mStartDateTextValue;
     private Spinner mLendPeriodSpinner;
     private EditText mPackHeaderText, mItemList, mBorrowerEmail, mBorrowerName, mRateValue, mCalPeriodValue;
     private Button mAddPackBtn, mBackButton;
@@ -78,7 +78,6 @@ public class AddPackageFragment extends Fragment{
     private ImageButton mDatePickerBtn;
     private boolean isIndefinite, isDateSet;
     private String mStartDate, mReturnDate;
-    private List<String> mImagePaths;
     private OnActivityToFragmentListener mOnFragmentStateChange;
 
     public AddPackageFragment() {
@@ -182,6 +181,7 @@ public class AddPackageFragment extends Fragment{
                     }
                 });
 
+
                 if(!TextUtils.isEmpty(mCalPeriodValue.getText()) && !mIndefSwitch.isChecked() && isDateSet) {
 
                     int numOfPeriod = Integer.parseInt(mCalPeriodValue.getText().toString().trim());
@@ -253,7 +253,20 @@ public class AddPackageFragment extends Fragment{
                 }else{
                     String uId = mUser.getUid();
 
-                    writePackageToFirestore(uId,borrowerName, borrowerEmail, packName, itemList, indefinite, mReturnDate);
+                    FirebaseService fbService = new FirebaseService(mUser, mDatabase, mDataModel);
+                    fbService.writePackageToFirestore(getActivity(), mBorrowerEmail, uId, borrowerName, borrowerEmail, packName, itemList, indefinite, mReturnDate);
+
+                    mDataModel.getValidUserResult().observe(getActivity(), new Observer<Boolean>() {
+                        @Override
+                        public void onChanged(@Nullable Boolean isValidUser) {
+                                mOnFragmentStateChange.setActionBarListener(R.string.app_name);
+                                mOnFragmentStateChange.setFragmentVisible(false);
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.popBackStack("homeFrag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                hideKeyboard();
+
+                        }
+                    });
 
                 }
 
@@ -275,101 +288,6 @@ public class AddPackageFragment extends Fragment{
             mOnFragmentStateChange = (OnActivityToFragmentListener) context;
         }catch (ClassCastException e){
             throw new ClassCastException(context.toString() + "must implement OnFragmentInteraction Listener");
-        }
-    }
-
-    public void writePackageToFirestore(String uId, String borrowerName, String borrowerEmail, String packName, String itemList, boolean indefinite, String date){
-
-
-        //Add to lender collection
-        DocumentReference packRef = mDatabase.collection(USER_COLLECTION).document(uId).collection(LEND_PACKAGE_COLLECTION).document();
-        String packId = packRef.getId();
-        String lenderName = mDataModel.getSelectedLenderName().getValue();
-
-        //Add to borrower collection with same packUid
-        CollectionReference borrowerRef = mDatabase.collection(USER_COLLECTION);
-        borrowerRef.whereEqualTo("email", borrowerEmail).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    boolean isValidUser = false;
-                    String borrowerId = "";
-                    for(QueryDocumentSnapshot document : task.getResult()){
-                        if(document.exists()) {
-                            isValidUser = true;
-                            borrowerId = document.getReference().getId();
-                            pushImageBitmapsToFirebaseStorage(uId, packId);
-
-                            //Package added for lender
-                            Package userPackage = new Package(lenderName, borrowerName, borrowerEmail, packId, packName, itemList, indefinite, date, mImagePaths);
-                            packRef.set(userPackage);
-
-                            //package added for borrower
-                            mDatabase.collection(USER_COLLECTION).document(borrowerId).collection(BORROW_PACKAGE_COLLECTION).document(packId).set(userPackage);
-
-                            Toast.makeText(getActivity(), "Package Added", Toast.LENGTH_SHORT).show();
-                            mOnFragmentStateChange.setActionBarListener(R.string.app_name);
-                            mOnFragmentStateChange.setFragmentVisible(false);
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                            fragmentManager.popBackStack("homeFrag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            hideKeyboard();
-                        }else{
-                            isValidUser = false;
-                        }
-                    }
-                    String invalidEmailErr = "User does not exist in Lendsum";
-
-                    if(!isValidUser){
-                        mBorrowerEmail.setError(invalidEmailErr);
-                    }
-                }
-
-            }
-
-        });
-
-
-    }
-
-    private void pushImageBitmapsToFirebaseStorage(String uId, String packId){
-        List<Bitmap> imageBitmaps = mDataModel.getSelectedImageArray().getValue();
-
-        mImagePaths = new ArrayList<>();
-
-        if(imageBitmaps.size() > 0) {
-
-            for (Bitmap bitmap : imageBitmaps) {
-
-                //Create paths for all images
-                String path = "lendsum/users/" + uId + "/" + packId + "/" + UUID.randomUUID() + ".jpg";
-
-                StorageReference imageStorageRef = mStorage.getReference(path);
-
-                //Turn image to byte image
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] data = baos.toByteArray();
-
-                //Upload to Firebase Storage
-                UploadTask uploadTask = imageStorageRef.putBytes(data);
-
-                uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Problem Uploading Images", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                });
-
-                //Add image paths to arraylist for firestore
-                mImagePaths.add(path);
-
-            }
         }
     }
 

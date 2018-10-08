@@ -13,15 +13,12 @@ import java.util.List;
 
 public class DataViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> booleanResult = new MutableLiveData<>();
+    private final MutableLiveData<String> selectedUserNameDisplay = new MutableLiveData<>();
     private final MutableLiveData<String> selectedStartDate = new MutableLiveData<>();
     private final MutableLiveData<Calendar> selectedReturnDate = new MutableLiveData<>();
     private final MutableLiveData<String> selectedLenderName = new MutableLiveData<>();
     private final MutableLiveData<List<Bitmap>> selectedImageArray = new MutableLiveData<>();
-
-    public void hasDateChanged(boolean isDateSet){booleanResult.setValue(isDateSet);}
-
-    public LiveData<Boolean> dateChangeResult(){return booleanResult;}
+    private final MutableLiveData<Boolean>  selectedIsValidUser = new MutableLiveData<>();
 
     public void setSelectedStartDate(String date){
         selectedStartDate.setValue(date);
@@ -45,10 +42,17 @@ public class DataViewModel extends ViewModel {
 
     public LiveData<String> getSelectedLenderName(){return selectedLenderName;}
 
-
     public void setSelectedImageArray(List<Bitmap> images){selectedImageArray.setValue(images); }
 
     public LiveData<List<Bitmap>> getSelectedImageArray(){
         return selectedImageArray;
     }
+
+    public void setSelectedUserNameDisplay(String userName){selectedUserNameDisplay.setValue(userName);}
+
+    public LiveData<String> getSelectedUserNameDisplay(){return selectedUserNameDisplay;}
+
+    public void setIsValidUser(boolean isValidUser){selectedIsValidUser.setValue(isValidUser);}
+
+    public LiveData<Boolean> getValidUserResult(){return selectedIsValidUser;}
 }
