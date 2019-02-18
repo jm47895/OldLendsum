@@ -78,8 +78,13 @@
     <style name="CustomDefaultButton">
         <item name="android:layout_width">300dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:textColor">@color/colorSecondaryLight</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="CustomDefaultSmallButton">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/colorSecondaryLight</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>

@@ -6,7 +6,7 @@
     android:id="@+id/list"
     android:layout_margin="4dp"
     android:layout_width="match_parent"
-    android:layout_height="180dp">
+    android:layout_height="200dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -68,27 +68,34 @@
             app:layout_constraintVertical_bias="0" />
 
         <TextView
-            android:id="@+id/dummyUsernameTextview"
+            android:id="@+id/lentToTextView"
             style="@style/CustomDefaultSmallText"
-            android:layout_height="18dp"
-            android:text="lent to username"
+            android:text="lending to "
             app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/dummyBundleTitleTextView"
-            app:layout_constraintVertical_bias="0" />
+            app:layout_constraintTop_toBottomOf="@+id/dummyBundleTitleTextView" />
+
+        <TextView
+            android:id="@+id/dummyUsernameTextview"
+            style="@style/CustomDefaultSmallText"
+            android:text="username"
+            app:layout_constraintBottom_toBottomOf="@+id/lentToTextView"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/lentToTextView"
+            app:layout_constraintTop_toTopOf="@+id/lentToTextView" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView2"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dummyUsernameTextview">
+            app:layout_constraintBottom_toTopOf="@+id/horizontal66Guide"
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
+            app:layout_constraintTop_toBottomOf="@+id/lentToTextView">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -96,11 +103,11 @@
             android:id="@+id/dummyBundleTitleTextView"
             style="@style/BundleHeaderText"
             android:text="Bundle"
-            app:layout_constraintBottom_toTopOf="@+id/dummyUsernameTextview"
+            app:layout_constraintBottom_toTopOf="@+id/lentToTextView"
             app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/horizontalTopGuide"
             app:layout_constraintVertical_bias="0"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -119,20 +126,20 @@
         <TextView
             android:id="@+id/dummyItemListTextView"
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
+            android:layout_height="wrap_content"
             android:text="list of items"
             android:textColor="@color/headerBlack"
-            app:layout_constraintBottom_toTopOf="@+id/dummyRateSubTextView"
+            app:layout_constraintBottom_toTopOf="@+id/dummyDaysLeftTextView"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toRightOf="@id/verticalStartGuide"
             app:layout_constraintRight_toLeftOf="@id/verticalEndGuide"
             app:layout_constraintTop_toBottomOf="@+id/dummyItemsSubTextView" />
 
         <TextView
-            android:id="@+id/dummyRateSubTextView"
+            android:id="@+id/dummyDaysLeftTextView"
             style="@style/BundleSubText"
-            android:text="Days Lent"
-            app:layout_constraintBottom_toTopOf="@+id/dummyRateParagraphTextView"
+            android:text="Days Left"
+            app:layout_constraintBottom_toTopOf="@+id/dummyDaysLeftParagraphTextView"
             app:layout_constraintEnd_toStartOf="@+id/dummyReturnDateSubTextView"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -140,35 +147,35 @@
             app:layout_constraintTop_toBottomOf="@+id/dummyItemListTextView" />
 
         <TextView
-            android:id="@+id/dummyRateParagraphTextView"
+            android:id="@+id/dummyDaysLeftParagraphTextView"
             style="@style/CustomDefaultSmallText"
             android:text="days"
             app:layout_constraintBottom_toTopOf="@+id/horizontalBottomGuide"
             app:layout_constraintEnd_toStartOf="@+id/dummyReturnDateParagraphTextView"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/verticalStartGuide"
-            app:layout_constraintTop_toBottomOf="@+id/dummyRateSubTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/dummyDaysLeftTextView" />
 
         <TextView
             android:id="@+id/dummyReturnDateSubTextView"
             style="@style/BundleSubText"
             android:layout_marginStart="60dp"
             android:text="Return Date"
-            app:layout_constraintBottom_toBottomOf="@+id/dummyRateSubTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/dummyDaysLeftTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/dummyRateSubTextView"
-            app:layout_constraintTop_toTopOf="@+id/dummyRateSubTextView" />
+            app:layout_constraintStart_toEndOf="@+id/dummyDaysLeftTextView"
+            app:layout_constraintTop_toTopOf="@+id/dummyDaysLeftTextView" />
 
         <TextView
             android:id="@+id/dummyReturnDateParagraphTextView"
             style="@style/CustomDefaultSmallText"
             android:text="return date"
-            app:layout_constraintBottom_toBottomOf="@+id/dummyRateParagraphTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/dummyDaysLeftParagraphTextView"
             app:layout_constraintEnd_toStartOf="@+id/verticalEndGuide"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@+id/dummyReturnDateSubTextView"
-            app:layout_constraintTop_toTopOf="@+id/dummyRateParagraphTextView" />
+            app:layout_constraintTop_toTopOf="@+id/dummyDaysLeftParagraphTextView" />
 
         <ImageButton
             android:id="@+id/editBtn"
@@ -177,23 +184,11 @@
             android:background="@android:color/white"
             android:src="@drawable/ic_edit_primary_color_24dp"
             app:layout_constraintBottom_toBottomOf="@+id/dummyReturnDateParagraphTextView"
-            app:layout_constraintEnd_toStartOf="@+id/packageMsgBtn"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/packageDeleteBtn"
             app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toEndOf="@+id/dummyReturnDateParagraphTextView"
+            app:layout_constraintStart_toEndOf="@+id/dummyReturnDateSubTextView"
             app:layout_constraintTop_toTopOf="@+id/dummyReturnDateParagraphTextView" />
 
-        <ImageButton
-            android:id="@+id/packageMsgBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:src="@drawable/ic_message_primary_color_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/editBtn"
-            app:layout_constraintEnd_toStartOf="@+id/packageDeleteBtn"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/editBtn"
-            app:layout_constraintTop_toTopOf="@+id/editBtn" />
 
         <ImageButton
             android:id="@+id/packageDeleteBtn"
@@ -201,10 +196,17 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:src="@drawable/ic_delete_primary_color_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/packageMsgBtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/packageMsgBtn"
-            app:layout_constraintTop_toTopOf="@+id/packageMsgBtn" />
+            app:layout_constraintEnd_toStartOf="@id/verticalEndGuide"
+            app:layout_constraintStart_toEndOf="@+id/editBtn"
+            app:layout_constraintTop_toTopOf="@+id/editBtn"
+            app:layout_constraintBottom_toBottomOf="@+id/editBtn"/>
+
+
+        <!--This xml is required for firestore core functionality. Do not alter or edit-->
+        <TextView
+            android:id="@+id/packageEmailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

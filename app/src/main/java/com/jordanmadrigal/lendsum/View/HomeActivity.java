@@ -1,7 +1,10 @@
 package com.jordanmadrigal.lendsum.View;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -16,32 +19,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jordanmadrigal.lendsum.Adapter.ViewPagerAdapter;
 import com.jordanmadrigal.lendsum.Interfaces.OnActivityToFragmentListener;
-import com.jordanmadrigal.lendsum.Model.User;
 import com.jordanmadrigal.lendsum.R;
 import com.jordanmadrigal.lendsum.Utility.CustomViewPager;
+import com.jordanmadrigal.lendsum.Utility.FirebaseService;
+import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 
-public class HomeActivity extends AppCompatActivity implements OnActivityToFragmentListener {
+public class HomeActivity extends AppCompatActivity implements OnActivityToFragmentListener{
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
 
+    private DataViewModel mDataModel;
     private ActionBar mActionBar;
     private TextView mNavProfText;
     private FloatingActionButton mFAB;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private View mNavHeaderView;
-    private FirebaseFirestore database;
+    private FirebaseFirestore mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private FragmentManager mFragmentManager;
@@ -53,10 +55,12 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+        mDataModel = ViewModelProviders.of(this).get(DataViewModel.class);
         mFragmentManager = getSupportFragmentManager();
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        database = FirebaseFirestore.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
         mNavProfText = findViewById(R.id.navUserName);
 
         mDrawerLayout = findViewById(R.id.drawerLayout);
@@ -83,6 +87,20 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         }
 
         mFAB = findViewById(R.id.mainFab);
+        mFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new ImageFragment();
+
+                mActionBar.setTitle("New Package");
+
+                mFAB.hide();
+
+                mFragmentManager.beginTransaction()
+                        .add(R.id.contentFrame,fragment)
+                        .addToBackStack("homeFrag").commit();
+            }
+        });
 
         mViewPager.addOnPageChangeListener(new CustomViewPager.OnPageChangeListener() {
 
@@ -114,9 +132,11 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
 
                                 mViewPager.setSwipeEnabled(false);
 
-                                fragment = new AddPackageFragment();
+                                fragment = new ImageFragment();
 
-                                mFragmentManager.beginTransaction().add(R.id.contentFrame,fragment).addToBackStack("HomeFrag").commit();
+                                mFragmentManager.beginTransaction()
+                                        .add(R.id.contentFrame,fragment)
+                                        .addToBackStack("homeFrag").commit();
 
                             }
 
@@ -135,7 +155,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
 
                                 fragment = new NewMessageFragment();
 
-                                mFragmentManager.beginTransaction().add(R.id.contentFrame,fragment).addToBackStack(null).commit();
+                                mFragmentManager.beginTransaction().add(R.id.contentFrame,fragment).addToBackStack("homeFrag").commit();
 
                             }
                         });
@@ -165,6 +185,7 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     public void onBackPressed() {
         super.onBackPressed();
         mActionBar.setTitle(R.string.app_name);
+        mViewPager.setSwipeEnabled(true);
         mFAB.show();
     }
 
@@ -184,7 +205,15 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     protected void onStart() {
         super.onStart();
 
-        getFirestoreNameDisplay();
+        FirebaseService fbService = new FirebaseService(mUser, mDatabase, mDataModel);
+
+        fbService.getFirestoreNameDisplay();
+        mDataModel.getSelectedUserNameDisplay().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String userName) {
+                mNavProfText.setText(userName);
+            }
+        });
 
         //Drawer event handler
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -205,27 +234,6 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
 
     }
 
-    public void getFirestoreNameDisplay(){
-        DocumentReference document = database.collection("users").document(mUser.getUid());
-
-        document.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                if(documentSnapshot.exists()) {
-
-                    User user = documentSnapshot.toObject(User.class);
-
-                    String firstName = user.getFirstName();
-                    String lastName = user.getLastName();
-                    String fullName = firstName + " " + lastName;
-
-                    mNavProfText.setText(fullName);
-
-                }
-            }
-        });
-    }
 
     //Handles Navdrawer click events
     private void navigateDrawerEvents(int id){
@@ -233,14 +241,6 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
         Intent intent;
 
         switch (id) {
-            case R.id.navFriendSearch:
-                intent = new Intent(HomeActivity.this, FriendSearchActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.navManagePayment:
-                intent = new Intent(HomeActivity.this, ManagePaymentActivity.class);
-                startActivity(intent);
-                break;
             case R.id.navSettings:
                 intent = new Intent(HomeActivity.this, SettingsActivity.class);
                 startActivity(intent);
@@ -264,12 +264,12 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
     }
 
     @Override
-    public void onActionBarListener(int title) {
+    public void setActionBarListener(int title) {
         getSupportActionBar().setTitle(title);
     }
 
     @Override
-    public void onFragmentVisible(boolean isVisible) {
+    public void setFragmentVisible(boolean isVisible) {
         if(!isVisible){
             mViewPager.setSwipeEnabled(true);
             mFAB.show();

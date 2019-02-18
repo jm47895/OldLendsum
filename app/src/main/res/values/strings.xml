@@ -1,4 +1,10 @@
 <resources>
+    <string-array name="lend_period_choices">
+        <item>      </item>
+        <item>Day(s)</item>
+        <item>Week(s)</item>
+        <item>Month()</item>
+    </string-array>
     <string name="app_name">Lendsum</string>
     <string name="log_in">Log In</string>
     <string name="new_user">New User?</string>
@@ -15,10 +21,7 @@
     <string name="last_name">Last Name</string>
     <string name="email">Email</string>
     <string name="create_new_profile">Create New Profile</string>
-    <string name="next">Next</string>
     <string name="reset_password">Reset Password</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile">Profile</string>
     <string name="search_for_friends">Search for Friends</string>
@@ -33,7 +36,19 @@
     <string name="no">No</string>
     <string name="lend_indefinitely">Lend indefinitely</string>
     <string name="return_date">Return Date</string>
-    <string name="create_package">Create Package</string>
+    <string name="create_package">Add Package</string>
     <string name="add_date">Add Date</string>
     <string name="indef_abbr">Indef</string>
+    <string name="borrower_name">Borrower Name</string>
+    <string name="borrower_email">Borrower Email</string>
+    <string name="next">Next</string>
+    <string name="addimagebtn">addImageBtn</string>
+    <string name="close_button">close button</string>
+    <string name="back">back</string>
+    <string name="start_date">Start Date</string>
+    <string name="lend_period">Lend for</string>
+    <string name="rate">Rate</string>
+    <string name="days">day</string>
+    <string name="weeks">week</string>
+    <string name="months">month</string>
 </resources>

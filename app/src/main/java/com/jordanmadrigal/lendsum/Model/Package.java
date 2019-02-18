@@ -1,9 +1,13 @@
 package com.jordanmadrigal.lendsum.Model;
 
+import java.util.List;
+
 public class Package {
 
     private String packageName;
+    private String packId;
     private String itemList;
+    private List<String> imagePaths;
     private float itemPrice;
     private String itemDescription;
     private boolean indefinite;
@@ -12,26 +16,25 @@ public class Package {
     private int lendTimePeriod;
     private int maturityDate;
     private String returnDate;
-    private String userName;
+    private String lenderName;
+    private String borrowerName;
+    private String borrowerEmail;
 
     public Package() {
     }
 
-    public Package(String packageName, String itemList, boolean indefinite, String returnDate) {
+    public Package(String lenderName, String borrowerName, String borrowerEmail, String packId, String packageName, String itemList, boolean indefinite, String returnDate, List<String> imagePaths) {
+        this.lenderName = lenderName;
+        this.borrowerName = borrowerName;
+        this.borrowerEmail = borrowerEmail;
+        this.packId = packId;
         this.packageName = packageName;
         this.itemList = itemList;
         this.indefinite = indefinite;
         this.returnDate = returnDate;
+        this.imagePaths = imagePaths;
     }
 
-
-
-    public Package(String packageName, String itemDescription, String packageRate, String returnDate) {
-        this.packageName = packageName;
-        this.itemDescription = itemDescription;
-        this.packageRate = packageRate;
-        this.returnDate = returnDate;
-    }
 
     public String getPackageName() {
         return packageName;
@@ -41,11 +44,13 @@ public class Package {
         this.packageName = packageName;
     }
 
-    public String getItemDescription() {
-        return itemDescription;
+    public String getPackId() {
+        return packId;
     }
 
-    public void setItemDescription(String itemDescription) { this.itemDescription = itemDescription; }
+    public void setPackId(String packId) {
+        this.packId = packId;
+    }
 
     public String getPackageRate() {
         return packageRate;
@@ -63,12 +68,28 @@ public class Package {
         this.returnDate = returnDate;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getLenderName() {
+        return lenderName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setLenderName(String lenderName) {
+        this.lenderName = lenderName;
+    }
+
+    public String getBorrowerName() {
+        return borrowerName;
+    }
+
+    public void setBorrowerName(String borrowerName) {
+        this.borrowerName = borrowerName;
+    }
+
+    public String getBorrowerEmail() {
+        return borrowerEmail;
+    }
+
+    public void setBorrowerEmail(String borrowerEmail) {
+        this.borrowerEmail = borrowerEmail;
     }
 
     public String getItemList() {
@@ -85,5 +106,13 @@ public class Package {
 
     public void setIndefinite(boolean indefinite) {
         this.indefinite = indefinite;
+    }
+
+    public List<String> getImagePaths() {
+        return imagePaths;
+    }
+
+    public void setImagePaths(List<String> imagePaths) {
+        this.imagePaths = imagePaths;
     }
 }

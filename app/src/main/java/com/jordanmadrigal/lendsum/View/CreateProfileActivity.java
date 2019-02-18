@@ -101,7 +101,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
                 }else{
                     Log.d(TAG, task.getException().getMessage());
-                    Toast.makeText(CreateProfileActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    mEmail.setError("Email already exists");
                 }
             }
         });
@@ -153,16 +153,5 @@ public class CreateProfileActivity extends AppCompatActivity {
     public static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
-
-    //Get the initials of of username for uID (unitTested)
-    /*public String getUserInitials(String fName, String lName){
-
-        String  fInitial = fName.substring(0, 1).toUpperCase();
-        String lInitial = lName.substring(0,1).toUpperCase();
-
-
-        return fInitial+lInitial;
-    }*/
-
 
 }
