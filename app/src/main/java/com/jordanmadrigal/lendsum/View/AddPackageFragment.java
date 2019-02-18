@@ -189,14 +189,17 @@ public class AddPackageFragment extends Fragment{
 
                     switch (position) {
                         case 1:
+                            numOfPeriod = 0;
                             returnDate.add(Calendar.DAY_OF_MONTH, numOfPeriod);  //Used to calculate return date in calendar fragment
                             mLendPeriodTextValue.setText(R.string.days);
                             break;
                         case 2:
+                            numOfPeriod = 0;
                             returnDate.add(Calendar.WEEK_OF_YEAR, numOfPeriod);
                             mLendPeriodTextValue.setText(R.string.weeks);
                             break;
                         case 3:
+                            numOfPeriod = 0;
                             returnDate.add(Calendar.MONTH, numOfPeriod);
                             mLendPeriodTextValue.setText(R.string.months);
                             break;
