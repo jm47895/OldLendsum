@@ -84,7 +84,7 @@ public class LendPackageAdapter extends FirestoreRecyclerAdapter<Package, LendPa
             //collapse and expand functionality and animation
 
             //Assign min height to cardvView
-            final int height = 600;
+            final int height = 700;
 
             mCardView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
