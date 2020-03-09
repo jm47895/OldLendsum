@@ -30,6 +30,7 @@ import com.jordanmadrigal.lendsum.Utility.FirebaseService;
 import com.jordanmadrigal.lendsum.ViewModel.DataViewModel;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 
 public class HomeActivity extends AppCompatActivity implements OnActivityToFragmentListener{
@@ -118,7 +119,6 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
                 }else{
                     mFAB.show();
                 }
-
                 switch (position){
                     case 0:
                         mFAB.setImageResource(R.drawable.ic_handshake_white_54dp);
@@ -160,8 +160,6 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
                             }
                         });
                         break;
-
-
                 }
 
             }
@@ -170,10 +168,6 @@ public class HomeActivity extends AppCompatActivity implements OnActivityToFragm
             public void onPageScrollStateChanged(int state) {
                 if(state == SCROLL_STATE_DRAGGING){
                     mFAB.hide();
-                }
-
-                if(state == SCROLL_STATE_SETTLING){
-                    mFAB.show();
                 }
             }
         });
